@@ -1,0 +1,59 @@
+#-----------------------------------------------------------------------------
+#
+# Makefile for the platform @OS@, on the host @host@.
+#
+#-----------------------------------------------------------------------------
+
+CC=@CC@
+DEFS=@DEFS@@NDEFS@
+CFLAGS=@CFLAGS@
+# CC=gcc
+# CFLAGS=-O2 -W -Wall -Wimplicit -Wstrict-prototypes -Wmissing-prototypes
+prefix=@prefix@
+TOPDIR=@TOPDIR@
+CPPFLAGS=@CPPFLAGS@
+
+SYSLIBS=@LIBS@
+LIBS=-lncftp -lsio -lStrn $(SYSLIBS)
+LIBS_MIN=-lncftp -lStrn $(SYSLIBS)
+STRIPFLAG=@SFLAG@
+LDFLAGS=@LDFLAGS@
+
+DELETE=/bin/rm -rf
+LIST=/bin/ls -l
+EXEEXT=@EXEEXT@
+OBJEXT=@OBJEXT@
+
+PROGS=codepw$(EXEEXT) getwelcome$(EXEEXT) ncftpgetbytes$(EXEEXT) ncftpgettomem$(EXEEXT) pncftp$(EXEEXT) unlstest$(EXEEXT)
+
+all: $(PROGS)
+	-@$(LIST) $(PROGS)
+
+install: $(PROGS)
+
+codepw$(EXEEXT): codepw.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) codepw.c -o codepw$(EXEEXT) $(LDFLAGS) $(LIBS_MIN) $(STRIPFLAG)
+
+getwelcome$(EXEEXT): getwelcome.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) getwelcome.c -o getwelcome$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+ncftpgetbytes$(EXEEXT): ncftpgetbytes.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) ncftpgetbytes.c -o ncftpgetbytes$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+ncftpgettomem$(EXEEXT): ncftpgettomem.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) ncftpgettomem.c -o ncftpgettomem$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+pncftp$(EXEEXT): pncftp.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) pncftp.c -o pncftp$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+unlstest$(EXEEXT): unlstest.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) unlstest.c -o unlstest$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+$(TOPDIR)/libncftp/libncftp.a:
+	[ -f $(TOPDIR)/libncftp/libncftp.a ]
+
+clean:
+	-$(DELETE) $(PROGS)
+	-$(DELETE) *.$(OBJEXT)
+	-$(DELETE) *.dSYM
+	-$(DELETE) core csetc.pch SunWS_cache

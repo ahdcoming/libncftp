@@ -1,0 +1,583 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>An Overview of the File Transfer Protocol</title>
+</head>
+
+<body>
+
+<h2>
+An Overview of the File Transfer Protocol</h2>
+<p>The File Transfer Protocol (FTP) was one of the first efforts to create a
+standard means of exchanging files over a TCP/IP network, so the FTP has been
+around since the 1970's.&nbsp; The FTP was designed with as much flexibility as
+possible, so it could be used over networks other than TCP/IP, as well as being
+engineered to have the capability with exchanging files with a broad variety of
+machines.</p>
+<p>The base specification is <a href="http://www.ncftp.com/ncftp/rfc959.html">RFC
+959</a> and is dated October 1985.&nbsp; There are some additional RFCs relating
+to FTP, but it should be noted that even as of this writing (December 2001) that
+most of the new additions are not in widespread use.&nbsp; The purpose of this
+document is to provide general information about how the protocol works without
+getting into too many technical details.&nbsp; RFC 959 should be consulted for
+details on the protocol.</p>
+<h4>Control Connection -- the conversation channel</h4>
+<p>The protocol can be thought of as interactive, because clients and servers
+actually have a conversation where they authenticate themselves and negotiate
+file transfers.&nbsp; In addition, the protocol specifies that the client and
+server do not exchange data on the conversation channel.&nbsp; Instead, clients
+and servers negotiate how to send data files on separate connections, with one
+connection for each data transfer.&nbsp; Note that a directory listing is
+considered a file transfer.</p>
+<p>To illustrate, we'll just present (an admittedly contrived) example of how
+the FTP would work between human beings rather than computer systems.&nbsp; For
+our example, we'll assume we have a client, Carl <b>Clinton</b>, who wishes to
+transfer files from Acme Mail <b>Service</b>  that manages his post office
+box.&nbsp; Below is a transcript of a phone call between Carl Clinton and Acme
+Mail Service.</p>
+<blockquote>
+  <div align="left">
+    <table cellSpacing="4" border="0">
+      <tbody>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450">(Dials the phone number for the mail
+            service)</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Hello,
+            this is the Acme Mail Service.&nbsp; How may I help you today?&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Hello,
+            this is Carl Clinton.&nbsp; I would like to access mailbox number
+            MB1234.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;OK,
+            Mr. Clinton, I need to verify that you may access mailbox
+            MB1234.&nbsp; What is your password?&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;My
+            password is QXJ4Z2AF.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Thank
+            you Mr. Clinton, you may proceed.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;For
+            now, I'm only interested in looking at the bills and invoices, so
+            look at the folder marked &quot;bills&quot; in my mailbox.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;OK.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Please
+            prepare to have your assistant call my secretary at +1 402 555
+            1234.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;OK.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Now
+            call my secretary and tell him the names of all the items in the
+            bills folder of my mailbox.&nbsp; Tell me when you have
+            finished.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;My
+            assistant is calling your secretary now.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;My
+            assistant has sent the names of the items.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450">(Receives the list from his
+            secretary and notices a bill from Yoyodyne Systems.)
+            <p><font face="Courier New" size="2">&quot;Please prepare to have
+            your assistant send to my fax machine +1 402 555 7777.&quot;</font></p>
+          </td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Service:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;OK.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Now
+            fax a copy of the bill from Yoyodyne Systems.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;My
+            assistant is calling your fax machine now.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;My
+            assistant has finished faxing the item.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Clinton:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Thank
+            you, that is all.&nbsp; Good bye.&quot;</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Goodbye.&quot;</font></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</blockquote>
+<p>Now let's look at how this same conversation would appear between computer
+systems communicating with the FTP protocol over a TCP/IP connection.
+</p>
+<blockquote>
+  <div align="left">
+    <table cellSpacing="4" border="0">
+      <tbody>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"></td>
+          <td vAlign="baseline" width="200">Connects to the FTP service at port
+            21 on the IP address 172.16.62.36.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">220
+            Hello, this is the Acme Mail Service.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">USER
+            MB1234</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">331
+            Password required to access user account MB1234.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">PASS
+            QXJ4Z2AF</font></td>
+          <td vAlign="baseline" width="200">Note that this password is not
+            encrypted.&nbsp; The FTP is susceptible to eavesdropping!</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">230
+            Logged in.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">CWD
+            Bills</font></td>
+          <td vAlign="baseline" width="200">Change directory to &quot;<tt>Bills</tt>.&quot;</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">250
+            &quot;/home/MB1234/Bills&quot; is new working directory.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">PORT
+            192,168,1,2,7,138</font></td>
+          <td vAlign="baseline" width="200">The client wants the server to send
+            to port number 1930 on IP address 192.168.1.2.&nbsp; In this case,
+            192.168.1.2 is the IP address of the client machine.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">200
+            PORT command successful.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">LIST</font></td>
+          <td vAlign="baseline" width="200">Send the list of files in &quot;<tt>Bills</tt>.&quot;</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">150
+            Opening ASCII mode data connection for /bin/ls.</font></td>
+          <td vAlign="baseline" width="200">The server now connects out from its
+            port 20 on 172.16.62.36&nbsp; to port 1930 on 192.168.1.2.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">226
+            Listing completed.</font></td>
+          <td vAlign="baseline" width="200">That succeeded, so the data is now
+            sent over the established data connection.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">PORT
+            192,168,1,2,7,139</font></td>
+          <td vAlign="baseline" width="200">The client wants the server to send
+            to port number 1931 on the client machine.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">200
+            PORT command successful.</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">RETR
+            Yoyodyne.TXT</font></td>
+          <td vAlign="baseline" width="200">Download &quot;<tt>Yoyodyne.TXT</tt>.&quot;</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">150
+            Opening ASCII mode data connection for Yoyodyne.TXT.</font></td>
+          <td vAlign="baseline" width="200">The server now connects out from its
+            port 20 on 172.16.62.36 to port 1931 on 192.168.1.2.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">226
+            Transfer completed.</font></td>
+          <td vAlign="baseline" width="200">That succeeded, so the data is now
+            sent over the established data connection.</td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">QUIT</font></td>
+          <td vAlign="baseline" width="200"></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="250"><font face="Courier New" size="2">221
+            Goodbye.</font></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</blockquote>
+<p>When using FTP, users use FTP client programs rather than directly
+communicating with the FTP server.&nbsp; Here's our same example using the stock
+&quot;<tt>ftp</tt>&quot; program which is usually installed as <tt>/usr/bin/ftp</tt>
+on UNIX systems (and <tt>FTP.EXE</tt> on Windows).&nbsp; The items the user
+types are in <b>bold</b>.
+</p>
+<blockquote>
+  <pre>ksh$ <b>/usr/bin/ftp</b>
+ftp&gt; open ftp.acmemail.example.com
+Connected to ftp.acmemail.example.com (172.16.62.36).
+220 <font face="Courier New" size="2">Hello, this is the Acme Mail Service.</font>
+Name (ftp.acmemail.example.com:root): <b>MB1234</b>
+331 <font face="Courier New" size="2">Password required to access user account MB1234</font>.
+Password: <font face="Courier New" size="2"><b>QXJ4Z2AF</b></font>
+230 Logged in.
+ftp&gt; <b>cd Bills</b>
+250 <font face="Courier New" size="2">&quot;/home/MB1234/Bills&quot; is new working directory</font>.
+ftp&gt; <b>ls</b>
+200 PORT command successful.
+150 Opening ASCII mode data connection for /bin/ls.
+-rw-r--r--   1 ftpuser  ftpusers     14886 Dec  3 15:22 Acmemail.TXT
+-rw-r--r--   1 ftpuser  ftpusers    317000 Dec  4 17:40 Yoyodyne.TXT
+226 Listing completed.
+ftp&gt; <b>get Yoyodyne.TXT</b>
+local: Yoyodyne.TXT remote: Yoyodyne.TXT
+200 PORT command successful.
+150 Opening ASCII mode data connection for Yoyodyne.TXT.
+226 Transfer completed.
+317000 bytes received in 0.0262 secs (1.2e+04 Kbytes/sec)
+ftp&gt; <b>quit</b>
+221 Goodbye.</pre>
+</blockquote>
+<p>As you can see, FTP is designed to allow users to browse the filesystem much
+like you would with a regular UNIX&nbsp; login shell or MS-DOS command
+prompt.&nbsp; This differs from other protocols that are transactional (i.e.
+HTTP), where a connection is established, clients issue a single message to a
+server that replies with a single reply, and the connection is closed.&nbsp; On
+the other hand, client programs can be constructed to simulate a transactional
+environment if they know in advance what they need to do.&nbsp; In effect, FTP
+is a stateful sequence of one or more transactions.
+</p>
+<h4>Command primitives, result codes and textual responses
+</h4>
+<p>The client is always responsible for initiating requests.&nbsp; These
+requests are issued with FTP command primitives, which are typically 3 or 4
+characters each.&nbsp; For example, the command primitive to change the working
+directory is <tt>CWD</tt>.
+</p>
+<p>The server replies are specially formatted to contain a 3-digit result code
+first, followed by a space character, followed by descriptive text (there is
+also a format for multi-line responses).&nbsp; The protocol specifies that
+clients must only rely upon the numeric result code, since the descriptive text
+is allowed to vary (with a few exceptions).&nbsp; In practice, the result text
+is often helpful for debugging, but is generally no longer useful for end users.
+</p>
+<h4>Authentication
+</h4>
+<p>Although it is not required by protocol, in effect clients must always login
+to the FTP server with a username and password before the server will allow the
+client to access the service.&nbsp;&nbsp;
+</p>
+<p>There is also a de facto standard for guest access, where &quot;<tt>anonymous</tt>&quot;
+(or &quot;<tt>ftp</tt>&quot;) are used as the username and an e-mail address is
+customarily used as the password in a way for a polite netizen to let the server
+administrator know who is using the guest login.&nbsp; Because users do not want
+to divulge their e-mail addresses to protect against unsolicited bulk e-mail,
+this has subsequently evolved to the point where the password is just some
+arbitrary text.
+</p>
+<h4>Types of data connections
+</h4>
+<p>The protocol has built-in support for different types of data
+transfers.&nbsp; The two mandated types are ASCII for text (specified by the
+client sending &quot;<tt>TYPE A</tt>&quot; to the server), and &quot;image&quot;
+for binary data (specified by &quot;<tt>TYPE I</tt>&quot;).
+</p>
+<p>ASCII transfers are useful when the server machine and client machine have
+different standards for text.&nbsp; For example, MS-DOS and Microsoft Windows
+use a carriage return and linefeed sequence to denote an end-of-line, but UNIX
+systems use just a linefeed.&nbsp; When ASCII transfers are specified, this
+enables a client to always be able to translate the data into its own native
+text format.
+</p>
+<p>Binary transfers can be used for any type of raw data that requires no
+translation.&nbsp; Client programs should use binary transfers unless they know
+that the file in question is text.
+</p>
+<p>The protocol does not have any advanced support for character sets for
+pathnames nor file contents.&nbsp; There is no way to specify UNICODE, for
+example.&nbsp; For ASCII, it is 7-bit ASCII only.
+</p>
+<p>Unfortunately, the burden of deciding what transfer type to use is left to
+the client, unlike HTTP, which can inform the client what type of data is being
+sent.&nbsp; Clients often simply choose to transfer everything in binary, and
+perform any necessary translation after the file is downloaded.&nbsp;
+Additionally, binary transfers are inherently more efficient to send over the
+network since the client and server do not need to perform on-the-fly
+translation of the data.
+</p>
+<p>It should be noted that ASCII transfers are mandated by the protocol as the
+default transfer type unless the client requests otherwise!
+</p>
+<a name="PORTandPASV"></a>
+<h4>The PORT and PASV conundrum -- Active and Passive data connections
+</h4>
+<p>Although it was purposely designed into the protocol as a feature, FTP's use
+of <a href="http://www.ncftp.com/ncftpd/doc/misc/ftp_and_firewalls.html"> separate data connections cause numerous problems for things like firewalls,
+routers, proxies</a> which want to restrict or delegate TCP connections, as well as
+things like IP stacks which want to do dynamic stateful inspection of TCP
+connections.&nbsp;&nbsp;
+</p>
+<p>The protocol does not mandate a particular port number or a direction that a
+data connection uses.&nbsp; For example, the easy way out would have been for
+the protocol's designers to mandate that <i> all</i> data connections must originate
+from the client machine and terminate at port 20 on the server machine.
+</p>
+<p>Instead, for maximum flexibility, the protocol allows the client to choose
+one of two methods.&nbsp; The first method, which we'll call &quot;<b>Active</b>&quot;,
+is where the client requests that the server originate
+a data connection and terminate at an IP address and port number of the client's
+choosing.&nbsp; The important thing to note here is that the s<i>erver connects
+out to the client</i>.
+</p>
+<ul>
+<table cellSpacing="4" border="0">
+  <tr>
+    <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+    <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Please
+      connect to me at port 1931 on IP address 192.168.1.2, then send the data.&quot;</font></td>
+  </tr>
+  <tr>
+    <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+    <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;OK&quot;</font></td>
+  </tr>
+</table>
+</ul>
+<p>Or, the client can request that the server to assign an IP address and port
+number on the server side and have the client originate a connection to the
+server address.&nbsp; We call this method &quot;<b>Passive</b>&quot; and note
+that the <i>client connects out to the server</i>.
+</p>
+<ul>
+<table cellSpacing="4" border="0">
+  <tr>
+    <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+    <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Please
+      tell me where I can get the data.&quot;</font></td>
+  </tr>
+  <tr>
+    <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+    <td vAlign="baseline" width="450"><font face="Courier New" size="2">&quot;Connect
+      to me at port 4023 on 172.16.62.36.&quot;</font></td>
+  </tr>
+</table>
+</ul>
+<p>The active method uses the FTP command primitive <tt>PORT</tt>, so the first example
+using the actual FTP protocol would resemble this:
+</p>
+<ul>
+    <table cellSpacing="4" border="0">
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">PORT
+            192,168,1,2,7,139</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">200
+            PORT command successful.</font></td>
+        </tr>
+    </table>
+</ul>
+<p>The passive method uses the FTP command primitive <tt>PASV</tt>, so the second example
+using the actual FTP protocol would resemble this:
+</p>
+<ul>
+    <table cellSpacing="4" border="0">
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Client:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">PASV</font></td>
+        </tr>
+        <tr>
+          <td vAlign="baseline" align="right" width="40"><b>Server:</b></td>
+          <td vAlign="baseline" width="450"><font face="Courier New" size="2">Entering Passive Mode
+            (172,16,62,36,133,111)</font></td>
+        </tr>
+    </table>
+</ul>
+<p>It should be noted that FTP servers are required to implement <tt>PORT</tt>,
+but are not required to implement <tt>PASV</tt>.&nbsp; The default has
+traditionally been <tt>PORT</tt> for this reason, but in practice it is now
+preferred to use <tt>PASV</tt> whenever possible because firewalls may be
+present on the client side which <a href="http://www.ncftp.com/ncftpd/doc/misc/ftp_and_firewalls.html">often
+cause problems</a>.
+</p>
+<h4>Partial data connections -- resuming downloads
+</h4>
+<p>The protocol provides a means to only transfer a portion of a file, by having
+a client specify a starting offset into the file (using the <tt>REST</tt>
+primitive, i.e. &quot;restart point&quot;).&nbsp; If an FTP session fails while
+a data transfer is in progress and has to be reestablished, a client can request
+that the server restart the transfer at the offset the client specifies.&nbsp;
+Note that not all FTP servers support this feature.
+</p>
+<h4>Directory listings
+</h4>
+<p>The base standard of the FTP protocol provides two types of listings, a
+simple name list (<tt>NLST</tt>) and a human-readable extended listing (<tt>LIST</tt>).&nbsp;
+The name list consists of lines of text, where each line contains exactly one
+file name and nothing else.
+</p>
+<p>The extended listing is not intended to be machine-readable and the protocol
+does not mandate any particular format.&nbsp; The de facto standard is for it to
+be in UNIX &quot;<tt>/bin/ls -l</tt>&quot; format, but although most servers try
+to emulate that format even on non-UNIX FTP servers, it is still common for
+servers to provide their own proprietary format.&nbsp; The important thing to
+note here is that this listing can contain any type of data and cannot be relied
+upon.&nbsp; Additionally, even those that appear in &quot;<tt>/bin/ls -l</tt>&quot;
+format cannot be relied upon for the validity of the fields.&nbsp; For example
+the date and time could be in local time or GMT.
+</p>
+<p>Newer FTP server implementations support a machine-readable listing primitive
+(<tt>MLSD</tt>) which is suitable for client programs to get reliable metadata
+information about files, but this feature is still relatively rare.&nbsp; That
+leaves the simple name list as the only reliable way to get filenames, but it
+doesn't tell a client program anything else (such as if the item is a file or a
+directory!).
+</p>
+<h4>Functional concerns
+</h4>
+<p>Despite a rich feature set, there are some glaring omissions.&nbsp; For
+example, the base specification doesn't even provide for clients to query a
+file's size or modification date.&nbsp; However, most FTP servers in use now
+support a de facto extension to the specification which provides the <tt>SIZE</tt>
+and <tt>MDTM</tt> primitives, and even newer servers support the extremely
+useful <tt>MLSD</tt> and <tt>MSLT</tt> primitives which can provide a wealth of
+information in a standardized format.
+</p>
+<p>There is also no 100% accurate way for a client to determine if a particular
+pathname refers to a file or directory, unless <tt>MLSD</tt> or <tt>MLST</tt> is
+available.&nbsp; Since the protocol also does not provide a way to transfer an
+entire directory of items at once, the consequence is that there is no 100%
+accurate way to download an entire directory tree.
+</p>
+<p>The end result is that FTP is not particularly suited to
+&quot;mirroring&quot; files and directories, although FTP client programs use
+heuristics to make calculated guesses when possible.
+</p>
+<p>Despite the guesswork that clients can use for determining metadata for files
+to download, there's little they can do for files that they upload.&nbsp; There
+is no standard way to preserve an uploaded file's modification time.&nbsp; FTP
+is platform agnostic, so there aren't standard ways to preserve
+platform-specific metadata such as UNIX permissions and user IDs or Mac OS file
+type and creator codes.
+</p>
+<p>Separate connections for data transfers are also a mixed blessing.&nbsp; For
+high performance it would be best to use a single connection and perform
+multiple data transfers before closing it.&nbsp; Even better would be for a
+method to use a single connection for both the control connection conversation
+and data transfers.&nbsp; Since each data connection uses an ephemeral (random)
+port number, it is possible to &quot;run out&quot; of connections.&nbsp; For
+details on this phenomenon, a separate <a href="http://www.ncftp.com/ncftpd/doc/misc/ephemeral_ports.html">article</a>
+is available.
+</p>
+<h4>Security concerns
+</h4>
+<p>It is important to note that the base specification, as implemented by the
+vast majority of the world's FTP servers, does not have any special handling for
+encrypted communication of any kind.&nbsp; When clients login to FTP servers,
+they are sending clear text usernames and passwords!&nbsp; This means that
+anyone with a packet sniffer between the client and server could surreptitiously
+steal passwords.&nbsp;&nbsp;
+</p>
+<p>Besides passwords, potential attackers could not only monitor the entire
+conversation on the FTP control connection, they could also monitor the contents
+of the data transfers themselves.
+</p>
+<p>There have been proposals to make the FTP protocol more secure, but these
+proposals have not seen widespread adoption.
+</p>
+<p>Therefore, unless the IP protocol layer itself is secure (for example,
+encrypted using IPsec), FTP should not be used if sensitive login information is
+to be exchanged over an insecure network, or if the files containing sensitive
+material are being transferred over an insecure network.
+</p>
+
+<hr>
+<p align="left">© Copyright 2001 by <b>Mike Gleason</b>, <i><a href="http://www.NcFTP.com">NcFTP
+Software</a></i>.<br>
+All Rights Reserved.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------------------
+#
+# Makefile for the platform @OS@, on the host @host@.
+#
+#-----------------------------------------------------------------------------
+
+CC=@CC@
+DEFS=-DO_S=\"@OS@\" @DEFS@@NDEFS@
+CFLAGS=@CFLAGS@
+# CC=gcc
+# CFLAGS=-O2 -W -Wall -Wimplicit -Wstrict-prototypes -Wmissing-prototypes
+prefix=@prefix@
+TOPDIR=@TOPDIR@
+CPPFLAGS=@CPPFLAGS@
+
+SYSLIBS=@LIBS@
+LIBS=-lncftp -lsio -lStrn $(SYSLIBS)
+STRIPFLAG=@SFLAG@
+LDFLAGS=@LDFLAGS@
+
+DELETE=/bin/rm -rf
+LIST=/bin/ls -l
+EXEEXT=@EXEEXT@
+OBJEXT=@OBJEXT@
+
+PROGS=ftp_monkey$(EXEEXT) ftp_monkeys$(EXEEXT)
+
+all: $(PROGS)
+	-@$(LIST) $(PROGS)
+
+install: $(PROGS)
+
+ftp_monkey$(EXEEXT): monkey.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) monkey.c -o ftp_monkey$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+
+ftp_monkeys$(EXEEXT): monkeys.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) monkeys.c -o ftp_monkeys$(EXEEXT) $(LDFLAGS) -lncftp $(STRIPFLAG)
+
+$(TOPDIR)/libncftp/libncftp.a:
+	[ -f $(TOPDIR)/libncftp/libncftp.a ]
+
+clean:
+	-$(DELETE) $(PROGS)
+	-$(DELETE) *.$(OBJEXT)
+	-$(DELETE) *.dSYM
+	-$(DELETE) core csetc.pch SunWS_cache

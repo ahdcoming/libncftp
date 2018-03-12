@@ -1,0 +1,2680 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title> LibNcFTP: Documentation </title>
+<!-- this file may be found as http://www.ncftp.com/libncftp/libncftp.html -->
+</head>
+<body bgcolor="#EEEEEE">
+
+<h2>
+<i>LibNcFTP</i>: FTP Client Library</h2>
+
+<menu>
+<li><a href="#intro">What is this?</a></li>
+<li><a href="#system_req">System Requirements</a></li>
+<li><a href="#extract_package">Downloading and Extracting the <i> LibNcFTP</i> Package File</a></li>
+<li><a href="#build_for_unix">Building and Installing <i>LibNcFTP</i> for UNIX</a></li>
+<li><a href="#build_for_windows">Building and Installing <i>LibNcFTP</i> for
+Windows</a></li>
+
+<li>
+<a href="#Tutorial">Tutorial</a></li>
+
+<li>
+<a href="#Structures">Library Data Structures</a></li>
+
+<li>
+<a href="#Functions">Function reference</a></li>
+
+<li>
+<a href="#qna">Questions &amp; Answers</a></li>
+</menu>
+
+<hr>
+<h3>
+<a name="intro">
+What is this?</a></h3>
+<p>
+The <i>LibNcFTP FTP Client Library</i> (or simply, &quot;<i>LibNcFTP</i>&quot;,
+or &quot;the library&quot;) is used to build custom applications that use the
+File Transfer Protocol (FTP) to exchange files between machines on a TCP/IP
+network.&nbsp; <i>LibNcFTP</i> provides an Application Programming Interface
+(API) in the &quot;C&quot; language.&nbsp; <i>LibNcFTP</i> is most often used as
+a quick way to add FTP functionality to an existing application, but can be used
+to build custom middleware, or even dedicated FTP client browser programs.</p>
+<p>The rest of the document provides information on how to install and use the
+library.&nbsp; This document assumes you have a good working knowledge of how
+the FTP protocol works; we suggest you read &quot;<a href="http://www.ncftp.com/libncftp/doc/ftp_overview.html">An
+Overview of the File Transfer Protocol</a>,&quot; which explains how FTP works
+without getting into too many technical details.</p>
+<p>For more information about <i>LibNcFTP</i> itself, visit the <i>NcFTP Software</i> page at <a href="http://www.ncftp.com/libncftp/">http://www.ncftp.com/libncftp/</a>
+.</p>
+<p>
+&nbsp;</p>
+<h3>
+<a name="system_req">
+System Requirements</a></h3>
+<p>
+<i>LibNcFTP</i> can be built and used on a variety of UNIX platforms, as well as
+Microsoft Windows and Mac OS X.&nbsp; The library is provided only in source
+code form, which means you need a C compiler installed on the machine that <i>LibNcFTP</i>
+itself is to be installed on.&nbsp; Most vendors' proprietary C compilers can be
+used, as well as the GNU &quot;<tt>gcc</tt>&quot; compiler.&nbsp; For Microsoft Windows,
+Visual Studio 6 or later is required.&nbsp; For Mac OS X, the Developer Tools
+package must be installed.</p>
+<p>
+The library itself will only need about 10 megabytes of disk space to hold all
+the source code, object code, and sample program files.</p>
+<p>
+Programs using the library can support any of the platforms that the library can
+be compiled on, which means your programs can run on the same wide variety of
+UNIX platforms, Microsoft Windows, or Mac OS X.&nbsp; With a little work, you
+can write code that can be compiled by all of these platforms.</p>
+<p>Programs using the library will use approximately 100 kB of memory for library
+variables, internal buffers, etc.&nbsp; Likewise, your programs' executable will
+increase in size by approximately 100 kB, but this can vary wildly depending on what
+type of optimization and debugging compiler options used, as well as which
+library functions your program uses.</p>
+<p>&nbsp;</p>
+<h3><a name="extract_package">Downloading and Extracting the <i> LibNcFTP</i> Package File</a></h3>
+<p>The library source code is provided in two package formats, a gzipped TAR
+file (<tt>.tar.gz</tt>) and ZIP (<tt>.zip</tt>) file.&nbsp; Before proceeding, you should check
+the official download page at <a href="http://www.ncftp.com/download/">http://www.ncftp.com/download/</a>
+to see if updated packages are available.</p>
+<p>UNIX users can extract the downloaded package file by typing the following
+from a shell prompt, where <i>X</i>.<i>Y</i>.<i>Z</i> denotes the library
+version:</p>
+<blockquote>
+  <p><tt>$ gzip -d -c libncftp-<i>X</i>.<i>Y</i>.<i>Z</i>-src.tar.gz
+  | tar xf -<br>
+  $ cd libncftp-<i>X</i>.<i>Y</i>.<i>Z</i></tt></p>
+</blockquote>
+The package contains 4 subdirectories: <tt>doc</tt>, <tt>Strn</tt>, <tt>sio</tt>,
+and <tt>libncftp</tt>.&nbsp; The <tt>doc</tt> directory contains documentation
+and READMEs.&nbsp; The <tt>Strn</tt> and <tt>sio</tt> directories contain the
+source code for the <tt>Strn</tt> string utility library and <tt>sio</tt> socket
+utility library respectively.
+<p>Windows users should use their favorite ZIP file utility to extract the
+<tt>libncftp-<i>X</i>.<i>Y</i>.<i>Z</i>-src.zip</tt>  file, and then skip the
+following section.</p>
+<p>&nbsp;</p>
+<h3>
+<a name="build_for_unix">Building and Installing <i>LibNcFTP</i> for UNIX</a></h3>
+<p>From a shell prompt, change to the <tt>libncftp</tt> subdirectory. There is a script you must run which
+will checks your system for certain features, so that the library can be compiled on a variety of UNIX systems.&nbsp;
+If you've built GNU or other open source software before, you're probably
+familiar with the &quot;<tt>./configure ; make ; make install</tt>&quot;
+sequence.
+</p>
+<p>First, decide on which C compiler to use, if you have more than one
+installed.&nbsp; It's common to have both a vendor's compiler as well as gcc
+available on the same machine.&nbsp; You can set the &quot;<tt>CC</tt>&quot;
+environment variable to the path to your preferred compiler, for example using
+the Bourne shell:
+</p>
+<blockquote>
+  <p><tt>$ CC=/usr/local/gcc/bin/gcc<br>
+  $ export CC</tt>
+</p>
+</blockquote>
+<p>You can also set a <tt>CFLAGS</tt> environment variable, but you do not need
+to do this since the configure script will choose the library's recommended set
+of compiler flags automatically, depending on the C compiler in use and the host
+operating system.
+</p>
+<p>You are now ready to run the configuration script:
+</p>
+<blockquote>
+<p><tt>$ sh ./configure --prefix=/usr/local</tt>
+</p>
+</blockquote>
+<p>This will produce several pages of output, and if all goes well, will create
+all the necessary <tt>Makefiles</tt> for you.&nbsp; If you like, you can inspect
+the <tt>Makefiles</tt> and <tt>config.h</tt> files, but you probably won't need
+to do that.&nbsp; The &quot;<tt>--prefix=/usr/local</tt>&quot; option you passed
+to the configure script tells the script to have the library files (<tt>.a</tt>
+files, <tt>.so</tt> files) set to install in <tt>/usr/local/lib</tt> and the
+header files (<tt>.h</tt> files) set to install in <tt>/usr/local/include</tt>.&nbsp;
+If you don't want to use <tt>/usr/local</tt>, you can use a different directory
+using the <tt>--prefix</tt> option.
+</p>
+<p>You are now ready to build the libraries and sample programs.&nbsp; Type:
+</p>
+<blockquote>
+<p><tt>$ make</tt>
+</p>
+</blockquote>
+<p>This should build everything, including the code in the <tt>Strn</tt> and <tt>sio</tt>
+subdirectories, as well as the sample programs in the <tt>libncftp</tt>
+subdirectory.&nbsp; Your build should say &quot;<tt>Done</tt>&quot; at the end,
+like this:
+</p>
+<blockquote>
+  <p><tt>...<br>
+  Compiling simpleget:                                                  [OK]&nbsp;<br>
+  -rwx------   1 gleason    gleason&nbsp; 77492 Dec  7 19:41 simpleget<br>
+  <b>Done</b>.<br>
+  $</tt>
+</p>
+</blockquote>
+<p>If the build did not succeed, <a href="http://www.ncftp.com/contact/">send us
+e-mail</a> and we should be able to help you build it, since we support almost
+all of the major UNIX variants.
+</p>
+<p>Finally, copy the finished libraries and headers to a permanent
+location.&nbsp; The easiest way to do that is to do this while logged in as <tt>root</tt>:
+</p>
+<blockquote>
+  <p><tt>$ make install</tt>
+</p>
+</blockquote>
+<p>That will copy the libraries into <tt>/usr/local/lib</tt>, and the header
+files into <tt>/usr/local/include</tt>.&nbsp; You can also &quot;<tt>make
+install</tt>&quot; while not logged in as <tt>root</tt>, but you'll need to make
+sure that <tt>/usr/local/lib</tt> and <tt>/usr/local/include</tt> have been
+created and that the user you are logged in as has write permission to those
+directories.
+</p>
+<p>You are now ready to build your own programs using <i>LibNcFTP</i>.&nbsp; You
+will need to ensure that your compiler can find the library files and header
+files.&nbsp; You may need to add &quot;<tt>-I/usr/local/include</tt>&quot; when
+compiling and &quot;<tt>-L/usr/local/lib</tt>&quot; when linking, if your
+compiler does not search those directories by default.&nbsp; When linking, your
+programs will need to link with all three of the installed libraries; an easy
+way to do that is to add the flags &quot;<tt>-lncftp -lsio -lStrn</tt>&quot;
+when linking.
+</p>
+<p>&nbsp;
+</p>
+<h3><a name="build_for_windows">Building and Installing <i>LibNcFTP</i> for
+Windows</a></h3>
+<p>You will need Visual C++ 6.0 or greater to build the library and sample
+programs. This version includes two supplementary libraries which you must build
+and link with your applications: a string utility library (<tt>Strn</tt>) and a
+Winsock utility library (<tt>sio</tt>).</p>
+<p>Keep the source hierarchy intact, so that the samples and libraries build
+without problems. Each project directory contains a visual studio project (<tt>.dsp</tt>
+and <tt>.dsw</tt> files), but you don't need to manually build each project.
+Instead, open the &quot;<tt>LibNcFTP_ALL.dsw</tt>&quot; workspace file in the <tt>libncftp</tt>
+directory, and then &quot;Rebuild All&quot; to build all the libraries and all
+the samples.</p>
+<p>To build your own applications using <i>LibNcFTP</i>, you'll need to make
+sure you configure your project to find the header files and library files.</p>
+<p>Your application may not need to use the <tt>sio</tt> or <tt>Strn</tt>
+libraries directly, but you still need to link with them. For example, the
+&quot;<tt>simpleget</tt>&quot; sample uses &quot;<tt>..\..\Debug,..\..\..\Strn\Debug,..\..\..\sio\Debug</tt>&quot;
+in the project option for additional library paths for the linker, and &quot;<tt>kernel32.lib
+user32.lib gdi32.lib advapi32.lib shell32.lib ws2_32.lib Strn.lib sio.lib
+libncftp.lib</tt>&quot; for the list of libraries to link with. Note that <i>LibNcFTP</i>
+uses <tt>advapi32.lib</tt> and <tt>shell32.lib</tt>, in addition to the usual
+&quot;<tt>kernel32.lib user32.lib gdi32.lib</tt>&quot;. Of course, it also needs
+to link with Winsock (<tt>ws2_32.lib</tt>).</p>
+<p>Similarly, you'll need to make sure one of your additional include
+directories points to the <i>LibNcFTP</i> directory containing <tt>ncftp.h</tt>.
+The &quot;<tt>simpleget</tt>&quot; sample uses &quot;<tt>..\..</tt>&quot; since
+it is in a subdirectory of the library itself. If you actually use functions
+from <tt>Strn</tt> or <tt>sio</tt> (as some of the samples do), you'll need to
+have your project look in their directories for their headers as well.</p>
+<p>About Winsock2: This version of the library was designed for use with Winsock
+version 2. Note that older versions of Windows 95 do not include Winsock version
+2, but can be upgraded by <a href="http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2/default.asp">getting
+the updater</a> from Microsoft.</p>
+<p>However, the library should also work with Winsock 1.1. That is left as an
+exercise to the coder to change the Winsock initialization to use 1.1 and to
+link with the 1.1 library (<tt>wsock32.lib</tt>).
+<br>
+</p>
+<hr>
+<h2>
+<a name="Tutorial">Tutorial</a></h2>
+First, you'll need to include the library header, <tt>ncftp.h</tt>.&nbsp; This
+header file includes <tt>ncftp_errno.h</tt>, which is the library's equivalent
+to <tt>&lt;errno.h&gt;</tt>.&nbsp; It also includes many system headers,
+including <tt>&lt;stdio.h&gt;</tt>, <tt>&lt;time.h&gt;</tt>, <tt>&lt;sys/types.h&gt;</tt>,
+etc..&nbsp; Therefore, for our simple example, we only need to:
+<blockquote>
+  <pre>#include &lt;ncftp.h&gt;</pre>
+</blockquote>
+<p>The library avoids using global variables. However, you give each library
+routine a pointer to a structure with the library's state data. This state
+data must be maintained between calls, and you must pass a pointer to the
+same structure for each library function. For simplicity, this example
+puts the two library structures you pass around in two global variables:</p>
+<pre>&nbsp;&nbsp;&nbsp; FTPLibraryInfo li;
+&nbsp;&nbsp;&nbsp; FTPConnectionInfo ci;</pre>
+Somewhere early in your program, before you try any FTP, you must initialize
+the library. Do that like this:
+<pre>&nbsp;&nbsp;&nbsp; FTPInitLibrary(&amp;li);</pre>
+Then, when you want to open a host, you initialize a session structure.
+Do that by calling <tt>FTPInitConnectionInfo()</tt> to initialize to the
+default values, and then you set the fields that define the session:
+<pre>&nbsp;&nbsp;&nbsp; FTPInitConnectionInfo(&amp;li, &amp;ci, kDefaultFTPBufSize);</pre>
+For this example, we will try a non-anonymous login to a server named <tt>ftp.cs.unl.edu</tt>
+with a username of <tt>mgleason</tt> and a password of <tt>au29X-b7</tt>.
+<pre>&nbsp;&nbsp;&nbsp; ci.debugLog = myDebugFile;
+&nbsp;&nbsp;&nbsp; strcpy(ci.user, &quot;mgleason&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(ci.pass, &quot;au29X-b7&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(ci.host, &quot;ftp.cs.unl.edu&quot;);</pre>
+I recommend that you use the optional <tt>debugLog</tt> parameter while
+you are testing. That is a <tt>FILE *</tt> pointer, and you are responsible
+for opening and closing it. You may want to use just <tt>stdout</tt>.
+<p>Then open the host:
+<pre>&nbsp;&nbsp;&nbsp; if ((result = FTPOpenHost(&amp;ci)) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Cannot open host: %s.\n&quot;, FTPStrError(result));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);
+&nbsp;&nbsp;&nbsp; }</pre>
+Now try some downloads.&nbsp; Note that our example no longer checks the return
+code (<tt>result</tt>) from the library functions, but you should check for
+errors by checking if the return code is negative.
+<pre>&nbsp;&nbsp;&nbsp; FTPChdir(&amp;ci, &quot;/pub/foobar/downloads/April2001&quot;);		/* remote directory */
+&nbsp;&nbsp;&nbsp; globPattern = &quot;log.????2000&quot;;
+&nbsp;&nbsp;&nbsp; dstDir = &quot;/usr/log/junk&quot;;			/* local directory */
+&nbsp;&nbsp;&nbsp; result = FTPGetFiles3(&amp;ci, globPattern, dstDir, kRecursiveNo, kGlobYes,
+			kTypeBinary, kResumeNo, kAppendNo, kDeleteNo,
+			kTarNo, kNoFTPConfirmResumeDownloadProc, 0
+			);</pre>
+Make a few directories, setting the <tt>recursive</tt> parameter to
+<tt>kRecursiveYes</tt>
+to simulate "<tt>mkdir -p</tt>":
+<pre>&nbsp;&nbsp;&nbsp; newDir = &quot;/pub/foobar/uploads/May2001&quot;;	/* remote directory */
+&nbsp;&nbsp;&nbsp; result = FTPMkdir(&amp;ci, newDir, kRecursiveYes);</pre>
+Upload some files into the directory we just created:
+<pre>&nbsp;&nbsp;&nbsp; result = FTPPutFiles3(&amp;ci, &quot;/usr/logs/*.05??2001&quot;, newDir,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kRecursiveNo, kGlobYes, kTypeBinary, kAppendNo,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NULL, NULL, kResumeNo, kDeleteNo,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kNoFTPConfirmResumeUploadProc, 0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</pre>
+Finally, close the connection. If your <tt>FTPOpenHost</tt> succeeded,
+you should make a good effort to make sure you close it:
+<pre>&nbsp;&nbsp;&nbsp; FTPCloseHost(&amp;ci);</pre>
+To see a simple example in entirety, see the <tt>simpleget.c</tt> source
+file included with the sample code. You should be able to compile that
+program and run it, to see how things work.&nbsp; This sample is located in the <tt>samples/simpleget</tt>
+subdirectory.
+<p>
+<hr>
+<a name="Structures"></a>
+<a name="struct"></a>
+<h2>Library Data Structures</h2>
+
+<h3>
+FTPLibraryInfo</h3>
+Each program that uses the library should have one of these structures.
+This needs to be referenced by all parts of your code that call a FTP library
+routine, so declare this a global variable or local variable in scope of
+all subroutines that use FTP.
+<blockquote>
+<pre>typedef struct FTPLibraryInfo {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char magic[16];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char defaultAnonPassword[80];
+} FTPLibraryInfo, *FTPLIPtr;</pre>
+</blockquote>
+The <tt>magic</tt> field is used internally by the library to make sure
+the programmer (that would be you :-) isn't using an invalid structure
+with the library. The library routines check this field against a well-known
+value to ensure validity.
+<p>The <tt>defaultAnonPassword</tt> field can be changed after the library
+has been initialized. You may need to set this manually if the library
+does not calculate a valid password for use with anonymous logins.
+<p>There are other fields in the structure, but they are used internally and
+should not be modified or relied upon.
+<h3>
+FTPConnectionInfo</h3>
+Each program that uses the library may have one or more of these structures
+in use at a time. Like the <tt>FTPLibraryInfo</tt> structure, you should
+declare these as global variables or local variables that maintain scope
+throughout use of your FTP operations, because you need to pass a pointer
+to this structure to each library function.<p>This structure is a mixture of mostly internal-use variables and configurable
+options.&nbsp; The structure is documented below, but some fields which are used
+internally have been omitted.&nbsp; The structure is large, but in practice
+you'll only use a handful of the fields and let the library use appropriate
+default values for the others.
+<blockquote>
+  <pre>typedef struct FTPConnectionInfo {
+	char <a href="#f_magic">magic</a>[16];
+
+	char <a href="#f_User_authentication_fields">host</a>[64];
+	char <a href="#f_User_authentication_fields">user</a>[64];
+	char <a href="#f_User_authentication_fields">pass</a>[64];
+	char <a href="#f_User_authentication_fields">acct</a>[64];
+	unsigned int <a href="#f_User_authentication_fields">port</a>;
+
+	int <a href="#f_Error_detection_fields">errNo</a>;
+	char <a href="#f_Error_detection_fields">lastFTPCmdResultStr</a>[128];
+	FTPLineList <a href="#f_Error_detection_fields">lastFTPCmdResultLL</a>;
+	int <a href="#f_Error_detection_fields">lastFTPCmdResultNum</a>;
+
+	FILE *<a href="#f_Logging_fields">debugLog</a>;
+	FTPLogProc <a href="#f_Logging_fields">debugLogProc</a>;
+
+	unsigned int <a href="#f_Timeout_fields">xferTimeout</a>;
+	unsigned int <a href="#f_Timeout_fields">connTimeout</a>;
+	unsigned int <a href="#f_Timeout_fields">ctrlTimeout</a>;
+	unsigned int <a href="#f_Timeout_fields">abortTimeout</a>;
+
+	int <a href="#f_Redialing_fields">maxDials</a>;
+	int <a href="#f_Redialing_fields">redialDelay</a>;
+
+	int <a href="#f_dataPortMode">dataPortMode</a>;
+
+	int <a href="#f_FTP_proxy_fields">firewallType</a>;
+	char <a href="#f_FTP_proxy_fields">firewallHost</a>[64];
+	char <a href="#f_FTP_proxy_fields">firewallUser</a>[64];
+	char <a href="#f_FTP_proxy_fields">firewallPass</a>[64];
+	unsigned int <a href="#f_FTP_proxy_fields">firewallPort</a>;
+
+	size_t <a href="#f_Socket_buffer_size_fields">ctrlSocketRBufSize</a>;
+	size_t <a href="#f_Socket_buffer_size_fields">ctrlSocketSBufSize</a>;
+	size_t <a href="#f_Socket_buffer_size_fields">dataSocketRBufSize</a>;
+	size_t <a href="#f_Socket_buffer_size_fields">dataSocketSBufSize</a>;
+
+	const char *<a href="#f_Automatic_type_selection_fields">asciiFilenameExtensions</a>;
+
+	unsigned short <a href="#f_Ephemeral_port_selection_fields">ephemLo</a>;
+	unsigned short <a href="#f_Ephemeral_port_selection_fields">ephemHi</a>;
+
+	FTPConnectMessageProc <a href="#f_Message_callback_fields">onConnectMsgProc</a>;
+	FTPRedialStatusProc <a href="#f_Message_callback_fields">redialStatusProc</a>;
+	FTPPrintResponseProc <a href="#f_Message_callback_fields">printResponseProc</a>;
+	FTPLoginMessageProc <a href="#f_Message_callback_fields">onLoginMsgProc</a>;
+
+	FTPGetPassphraseProc <a href="#f_Password_request_callback_fields">passphraseProc</a>;
+
+	FTPProgressMeterProc <a href="#f_Progress_meter_fields">progress</a>;
+	longest_int <a href="#f_Progress_meter_fields">bytesTransferred</a>;
+	int <a href="#f_Progress_meter_fields">useProgressMeter</a>;
+	struct timeval <a href="#f_Progress_meter_fields">t0</a>;
+	double <a href="#f_Progress_meter_fields">sec</a>;
+	double <a href="#f_Progress_meter_fields">secLeft</a>;
+	double <a href="#f_Progress_meter_fields">kBytesPerSec</a>;
+	double <a href="#f_Progress_meter_fields">percentCompleted</a>;
+	longest_int <a href="#f_Progress_meter_fields">expectedSize</a>;
+	time_t <a href="#f_Progress_meter_fields">mdtm</a>;
+	time_t <a href="#f_Progress_meter_fields">nextProgressUpdate</a>;
+	const char *<a href="#f_Progress_meter_fields">rname</a>;
+	const char *<a href="#f_Progress_meter_fields">lname</a>;
+	int <a href="#f_Progress_meter_fields">stalled</a>;
+	int <a href="#f_Progress_meter_fields">dataTimedOut</a>;
+	int <a href="#f_Progress_meter_fields">cancelXfer</a>;
+
+	char <a href="#f_DNS_information_fields">actualHost</a>[64];
+	char <a href="#f_DNS_information_fields">ip</a>[32];
+
+	char *<a href="#f_Starting_directory_fields">startingWorkingDirectory</a>;
+	...
+
+	int <a href="#f_Piggyback_fields">iUser</a>;
+	void *<a href="#f_Piggyback_fields">pUser</a>;
+	longest_int <a href="#f_Piggyback_fields">llUser</a>;
+	...
+} FTPConnectionInfo;</pre>
+</blockquote>
+The <tt><a name="f_magic">magic</a></tt> field is used internally by the library to make sure
+the programmer isn't using an invalid structure
+with the library. The library routines check this field against a well-known
+value to ensure validity.&nbsp; Do not modify this field!
+<h4><a name="f_User_authentication_fields">User authentication fields</a></h4>
+<p>
+Before connecting, you will always set the
+<tt><a name="f_host">host</a></tt> field, which is
+the hostname or IP address of the remote FTP server to connect to. If
+the server is running on a non-standard port number (not 21), you may set
+the
+<tt><a name="f_port">port</a></tt> field.</p>
+<p>If you
+are logging in non-anonymously, you will need to use username and password
+authentication, which requires that you need to set the
+<tt><a name="f_user">user</a></tt>
+and
+<tt><a name="f_pass">pass</a></tt> fields (and very rarely, the
+<tt><a name="f_acct">acct</a></tt> field). Otherwise, you can leave the <tt>user</tt>
+field unset to indicate you wish to login anonymously.</p>
+<h4><a name="f_Error_detection_fields">Error detection fields</a></h4>
+<p>The most interesting field is the <tt><a name="f_errNo">errNo</a></tt> field. If you an error
+occurs within a library function, a negative result code is returned and
+the <tt>errNo</tt> field is set to the error number, which you can find
+listed in <tt>&lt;ncftp_errno.h&gt;</tt>.
+<p>If you get an error, you may also want to inspect the
+<tt><a name="f_lastFTPCmdResultStr">lastFTPCmdResultStr</a></tt>
+field. This will contain the first line of the most recent reply from the
+FTP server (i.e. &quot;<tt>550 Permission Denied</tt>&quot;). Similarly, the <tt><a name="f_lastFTPCmdResultNum">lastFTPCmdResultNum</a></tt> contains the numeric
+FTP protocol result code that came along with it (i.e. <tt><b>550</b></tt>), and the <tt><a name="f_lastFTPCmdResultLL">lastFTPCmdResultLL</a></tt> is the
+<tt><a href="#LineLists">FTPLineList</a></tt>
+containing the complete reply.
+<h4><a name="f_Logging_fields">Logging fields</a></h4>
+<p>For debugging purposes you may want to use the
+<tt><a name="f_debugLog">debugLog</a></tt>  field which you can set to stdio <tt>FILE *</tt> pointers. The <tt>debugLog</tt>
+writes the whole conversation that took place on the control connection,
+and would be what you would get had you done an FTP manually.<p>Instead of having the library write to files directly, you may wish
+to use your own logging function. You can use the <tt><a name="f_debugLogProc">debugLogProc</a></tt>
+ field to point to a custom logging function. The function should be
+of this type:
+<pre>&nbsp;&nbsp;&nbsp; typedef void (*FTPLogProc)(const FTPCIPtr, char *);</pre>
+The first argument is a pointer to the <tt>FTPConnectionInfo</tt> structure,
+and the second is the string produced for logging.
+<h4><a name="f_Redialing_fields">Redialing fields</a></h4>
+<p>The library can "redial" automatically, so if the connection or login
+attempt failed, it can retry. To do this, you set the
+<tt><a name="f_maxDials">maxDials</a></tt>
+field to <tt>2</tt> or more. The related field <tt><a name="f_redialDelay">redialDelay</a></tt> can be set to
+the number of seconds to wait between each attempt.
+<h4><a name="f_Timeout_fields">Timeout fields</a></h4>
+<p>There are several timeout fields you can set if you want certain FTP
+operations to abort after a period of time. These fields are <tt><a name="f_xferTimeout">xferTimeout</a></tt>,
+<tt><a name="f_connTimeout">connTimeout</a></tt>,
+<tt><a name="f_ctrlTimeout">ctrlTimeout</a></tt>,
+and
+<tt><a name="f_abortTimeout">abortTimeout</a></tt>, and each value is in seconds. If you set a timeout
+field, library functions may return an error code when the timeout occurs.
+<p>The <tt>xferTimeout</tt> refers to the amount of time to wait on an
+data transfer read or write; The
+<tt>connTimeout</tt> refers to the amount
+of time to wait before establishing a successful control (FTP conversation)
+connection; The
+<tt>ctrlTimeout</tt> refers to the amount of time to wait
+for a response from the server on an established control connection; And
+the
+<tt>abortTimeout</tt> refers to a special case of the above when an
+abort transfer has been requested. (Usually that is used when the user
+hits <tt>^C</tt> and is intending to quit the program as soon as possible, so the
+time is much less than a regular control connection response.)
+<p>You would use the <tt>connTimeout</tt> field when you are first trying to connect to a
+remote FTP server and want to place a reasonable time limit for the connection
+and login procedure.
+<p>Once you have established a session, you could use the <tt>ctrlTimeout</tt> to prevent
+a particular command from blocking forever, since the server may become
+unresponsive (or time you out!) at any time after the session has been
+established.
+<p>Once a file transfer connection has been established, the <tt>xferTimeout</tt>
+is used to prevent uploads or downloads from stalling forever.&nbsp; Because of
+network congestion, it is not uncommon for FTP data transfers to timeout despite
+having previously transferred hundreds of kilobytes of data.&nbsp; Note that the
+<tt>connTimeout</tt> is used when first trying to <i>establish</i> the data
+connection, but once the data transfer has started the <tt>xferTimeout</tt> is
+used.&nbsp; The reason for this is that it is usually best to have a relatively
+short timeout to see if you can connect to the remote host, and then to use a
+longer timeout for the actual data blocks so that the sending and receiving
+hosts have extra leeway to survive transient network congestion.<p>The <tt>abortTimeout</tt>
+is used in one special case.&nbsp; When a client wants to abort a transfer, the
+client is supposed to send an abort request (<tt>ABOR</tt>).&nbsp; This timeout
+is used to place a timeout on the response to the abort request; typically this
+is very short (3 seconds) as a courtesy to the server before assuming the server
+can't abort the transfer (which happens frequently).&nbsp; The alternative is to
+just close the data connection, but the protocol specification implies that is
+not good behavior.&nbsp; The <tt>abortTimeout</tt> is available so that the <tt>ctrlTimeout</tt>
+would not need to be used for this, since the <tt>ctrlTimeout</tt> is typically
+much longer.&nbsp; You don't want to wait around for an abort request to finish
+when you will most likely be closing the session anyway.
+<h4><a name="f_dataPortMode">Data connection type fields (&quot;PASV&quot; or &quot;PORT&quot;)</a></h4>
+<p>The <tt>dataPortMode</tt> may be set to one of
+<tt>kSendPortMode</tt>,
+<tt>kPassiveMode</tt>,
+or <tt>kFallBackToSendPortMode</tt>. If you want to try passive FTP, you
+can use <tt>kPassiveMode</tt>. You can also use
+<tt>kFallBackToSendPortMode</tt>
+which means the library will try passive FTP first, and if the server does
+not support it, it will then try regular port FTP.
+<h4><a name="f_FTP_proxy_fields">FTP proxy fields</a></h4>
+<p>The library provides a means to work with FTP proxies.&nbsp; These proxies
+are traditionally older firewall implementations which do not implement
+automatic and transparent FTP with network address translation.&nbsp; Hopefully
+it will not be necessary to use this feature, but if your network administrator
+says you have to &quot;login to the firewall&quot; in order to use FTP, you will
+need to use these fields and get the necessary details on how your firewall is
+accessed.
+<p>Note that the library does <b> not</b> support HTTP proxies which handle FTP!&nbsp;
+You would need to connect to the proxy server using the HTTP protocol and issue
+a &quot;<tt>GET</tt>&quot; request with a FTP URL, and <i>LibNcFTP</i> does not
+support HTTP.&nbsp; Examples of proxy servers which are <b> not </b> supported: Microsoft
+Proxy Server, Netscape Proxy Server, and Squid.
+<p>The <tt>firewallType</tt> field can be set to a value from <tt>0</tt> to <tt>7</tt>.&nbsp;
+Each of the permutations that the library supports are listed below.
+<ul>
+<li><p><b>Type 1</b>:  Connect to firewall host, but send &quot;<tt>USER <i>user</i>@<i>real.host.name</i></tt>&quot;.&nbsp;
+  The &quot;<tt><i>real.host.name</i></tt>&quot; will be filled in by the
+  library.</p></li>
+
+<li><p><b>Type 2</b>:  Connect to firewall, login with &quot;<tt>USER <i>fwuser</i></tt>&quot; and
+  &quot;<tt>PASS <i>fwpass</i></tt>&quot;, and then &quot;<tt>USER <i>user</i>@<i>real.host.name</i></tt>&quot;.</p></li>
+
+<li><p><b>Type 3</b>:  Connect to and login to firewall, and then use &quot;<tt>SITE
+  <i>real.host.name</i></tt>&quot;, followed by the regular <tt>USER</tt> and <tt>PASS</tt>.</p></li>
+
+<li><p><b>Type 4</b>:  Connect to and login to firewall, and then use &quot;<tt>OPEN
+  <i>real.host.name</i></tt>&quot;, followed by the regular <tt>USER</tt> and <tt>PASS</tt>.</p></li>
+
+<li><p><b>Type 5</b>:  Connect to firewall host, but send &quot;<tt>USER <i>user</i>@<i>fwuser</i>@<i>real.host.name</i></tt>&quot; and
+  &quot;<tt>PASS <i>pass</i>@<i>fwpass</i></tt>&quot; to login.</p></li>
+
+<li><p><b>Type 6</b>:  Connect to firewall host, but send &quot;<tt>USER <i>fwuser</i>@<i>real.host.name</i></tt>&quot; and
+  &quot;<tt>PASS <i>fwpass</i></tt>&quot; followed by a regular &quot;<tt>USER <i>user</i></tt>&quot; and
+  &quot;<tt>PASS <i>pass</i></tt>&quot; to complete the login.</p></li>
+
+<li><p><b>Type 7</b>:  Connect to firewall host, but send &quot;<tt>USER <i>user</i>@<i>real.host.name</i>
+  <i>fwuser</i></tt>&quot; and &quot;<tt>PASS <i>pass</i></tt>&quot; followed by
+  &quot;<tt>ACCT <i>fwpass</i></tt>&quot; to complete the login.</p></li>
+
+<li><p><b>Type 0</b>:  Do NOT use a firewall (the default).</p></li>
+</ul>
+
+<p>The <tt><a name="f_firewallHost">firewallHost</a></tt> field must be set to
+the hostname or IP address string of the firewall machine.&nbsp; You may need to
+use an IP address string (i.e. &quot;<tt>192.168.200.250</tt>&quot; if Domain
+Name Service is not available.<p>The <tt><a name="f_firewallPort">firewallPort</a></tt>
+field may be set to a TCP port number, if the firewall requires you to connect
+to the firewall on a port other than the default port (<tt>21</tt>).<p>The <tt><a name="f_firewallUser">firewallUser</a></tt>
+and <tt><a name="f_firewallPass">firewallPass</a></tt> fields is available if
+your firewall requires you to login with a username and password (<tt><i>fwuser</i></tt>
+and <tt><i>fwpass</i></tt> as noted above).
+
+<h4><a name="f_Socket_buffer_size_fields">Socket buffer size fields</a></h4>
+<p>The socket buffers used for the control connection and data connections can
+be tuned if you want to use something other than the default values (which vary
+by platform and individual kernel tuning).&nbsp; Each of the options below can
+be set to the number of bytes you wish to use for the buffer.&nbsp; The library
+will then attempt to set the socket option <tt>SO_SNDBUF</tt> or <tt>SO_RCVBUF</tt>
+as needed.
+<ul>
+  <li><tt>ctrlSocketRBufSize</tt> - control connection, receive buffer</li>
+  <li><tt>ctrlSocketSBufSize</tt> - control connection, send buffer</li>
+  <li><tt>dataSocketRBufSize</tt> - data connection, receive buffer</li>
+  <li><tt>dataSocketSBufSize</tt> - data connection, send buffer</li>
+</ul>
+<p>If the data connection socket buffers are set by you, the library will also
+attempt to negotiate <i>TCP Large Window</i> support with the server by using <tt>SITE</tt>
+commands (<tt>SITE RETRBUFSIZE</tt>, <tt>RBUFSIZ</tt>, <tt>RBUFSZ</tt>, <tt>BUFSIZE</tt>,
+<tt>STORBUFSIZE</tt>, <tt>SBUFSIZ</tt>, <tt>SBUFSZ</tt>).&nbsp; This could also
+significantly increase performance depending on the type of links (i.e.
+satellite) between client and server.&nbsp; The downside to this is that not
+many FTP servers support the needed <tt>SITE</tt> commands to enable this
+feature.
+<p>Note that it is usually not a good idea to set the buffers for the control
+connection.&nbsp; The default sizes are already more than large enough, so
+setting the sizes larger will not increase performance.
+<h4><a name="f_Automatic_type_selection_fields">Automatic type selection fields</a></h4>
+<p>Functions such as <tt><a href="#FTPGetFiles">FTPGetFiles</a> </tt>and <tt><a href="#FTPPutFiles">FTPPutFiles</a>
+</tt>transfer groups of files at a time.&nbsp; The <tt>asciiFilenameExtensions</tt>
+field gives you an opportunity to automatically have files in these groups which
+end in certain extensions be transferred in ASCII rather than binary.&nbsp; This
+field requires a special format, which is best illustrated by an example:
+<blockquote>
+<pre>cip-&gt;asciiFilenameExtensions = &quot;|.txt|.asc|.html|.htm|&quot;;</pre>
+</blockquote>
+<p>The extensions are delimited by pipe characters (<tt>'|'</tt>) and the string
+must both begin and end in a pipe character.
+<h4><a name="f_Ephemeral_port_selection_fields">Ephemeral port selection fields</a></h4>
+<p>If you set both the <tt>ephemLo</tt> and <tt>ephemHi</tt> fields, this range
+of ports will be used when selecting port numbers to use for active data
+connections (i.e. what we use with <tt>PORT</tt>).&nbsp; For example, you could
+set <tt>ephemLo</tt> to <tt>50000</tt> and <tt>ephemHi</tt> to <tt>60000</tt> to
+have <tt>PORT</tt> only use ports between 50000 and 60000.<h4><a name="f_Message_callback_fields">Message
+callback fields</a></h4>
+<p>The library provides a few hooks so that if your program wants to update its
+user interface with FTP status information it can do so.&nbsp; The following
+callbacks are defined:
+<blockquote>
+  <pre>typedef void (*FTPConnectMessageProc)(const FTPCIPtr, ResponsePtr);
+typedef void (*FTPLoginMessageProc)(const FTPCIPtr, ResponsePtr);
+typedef void (*FTPRedialStatusProc)(const FTPCIPtr, int mode, int value);
+typedef void (*FTPPrintResponseProc)(const FTPCIPtr, ResponsePtr);</pre>
+</blockquote>
+<p>Some of the callbacks pass you a pointer to a <tt>Response</tt> structure,
+which looks like this:
+<blockquote>
+  <pre>typedef struct Response {
+	FTPLineList msg;
+	int codeType;
+	int code;
+	int printMode;
+	int eofOkay;
+	int hadEof;
+} Response, *ResponsePtr;</pre>
+</blockquote>
+<p>The only thing you should need to access in the structure is the <tt>msg</tt>
+field, which contains a <tt><a href="#LineLists">FTPLineList</a></tt> with the text
+from the FTP server.<p>The <tt>onConnectMsgProc</tt> and <tt>onLoginMsgProc</tt>
+callbacks provide a way for you to display the connect and login messages,
+respectively.&nbsp; When you FTP to a remote server, the first thing the server
+does is send the connect message (also known as a welcome message).&nbsp; The
+server then expects you to login with a username and password.&nbsp; Once you
+have logged in, it sends a login message in reply.&nbsp; Neither the connect nor
+the login message are guaranteed to contain anything except a terse FTP reply
+message, but popular servers often have useful information in one or both.<p>The
+<tt>redialStatusProc</tt> is called to indicate what the library is doing.&nbsp;
+The mode parameter will be either <tt>kRedialStatusDialing</tt> or <tt>kRedialStatusSleeping</tt>.&nbsp;
+If it is <tt>kRedialStatusDialing</tt>, then the value parameter will contain
+how many connection attempts to the server (number of &quot;dials&quot;) and
+after your function is called the library will immediately attempt to
+connect.&nbsp; If it is <tt>kRedialStatusSleeping</tt>, value will be how many
+seconds the library is delaying until the next attempt.<p>The <tt>printResponseProc</tt>
+is called whenever the library would be printing a <tt>Response</tt> structure
+to the debug log.&nbsp; It could be used to modify the <tt>printMode</tt> field
+of the <tt>Response</tt> structure to determine if the <tt>Response</tt> should
+be printed, but generally you should be filtering that information from a <tt><a href="#f_debugLogProc">debugLogProc</a></tt>
+instead.<h4><a name="f_Password_request_callback_fields">Password request
+callback fields</a></h4>
+<p>When attempting a user (not anonymous) login, you may leave the <tt>pass</tt>
+field blank (set to an empty C-string, <tt>&quot;&quot;</tt>) and set <tt>passphraseProc</tt>
+to a:
+<blockquote>
+  <pre>typedef void (*FTPGetPassphraseProc)(const FTPCIPtr, FTPLineListPtr pwPrompt, char *pass, size_t dsize);</pre>
+</blockquote>
+<p>When the library needs the password, it will call your function to allow you
+to present a prompt to an end-user.&nbsp; As parameters your function will
+receive the message from the remote FTP server (useful for one-time password
+systems which provide information to the user) in the <tt>pwPrompt</tt>
+parameter, a pointer to a C string in <tt>pass</tt>, and the size of the string
+in <tt>dsize</tt> (i.e., do not write more than <tt>dsize - 1</tt>
+bytes to <tt>pass</tt>).<h4><a name="f_Progress_meter_fields">Progress meter
+fields</a></h4>
+<p>The library computes statistics for each data transfer. If you are interested
+in those, you can inspect the <tt>bytesTransferred</tt>,
+<tt>sec</tt>,
+and <tt>kBytesPerSec</tt> fields for the results. Those correspond to the
+size of the file, how long it took in seconds to transfer, and how fast
+it was in kilobytes per second.
+<p>You may also want to implement a progress meter, which updates while
+the transfer is in progress. To do that you set the <tt>progress</tt> field to a:
+<pre>&nbsp;&nbsp;&nbsp; typedef void (*FTPProgressMeterProc)(const FTPCIPtr, int);</pre>
+The second argument tells you which state the transfer is in. You will
+get a <tt>kPrInitMsg</tt> message before the first block of data transferred,
+and an <tt>kPrEndMsg</tt> at the end. In addition, you get a <tt>kPrUpdateMsg </tt>for
+each block transferred. The sample source code included with the package
+shows how to use progress meters.
+<p>During the transfer (and when your progress meter function is called) the
+following additional fields are valid.</p>
+<ul>
+  <li><tt>t0</tt> - the time when the transfer started;</li>
+  <li><tt>expectedSize</tt> - How many bytes the destination file should contain
+    after the transfer completes;</li>
+  <li><tt>secLeft</tt> - An estimate of how many seconds are remaining based on
+    the current throughput (if <tt>expectedSize</tt> is known)</li>
+  <li><tt>percentCompleted</tt> - Percentage of the transfer that has been
+    completed (0 to 100%) (if <tt>expectedSize</tt> is known)</li>
+  <li><tt>mdtm</tt> - The modification timestamp of the source file;</li>
+  <li><tt>nextProgressUpdate</tt> - the next timestamp we will update the
+    progress meter;</li>
+  <li><tt>rname</tt> - name of the remote file;</li>
+  <li><tt>lname</tt> - name of the local file;</li>
+  <li><tt>stalled</tt> - if non-zero, the transfer is currently waiting for the
+    remote host for data;</li>
+  <li><tt>dataTimedOut</tt> - if non-zero, the transfer was aborted because the <tt>xferTimeout</tt>
+    expired;</li>
+</ul>
+<p>There is one more important field to mention, the <tt>cancelXfer</tt>
+field.&nbsp; This can be set during a transfer (from within your progress meter
+function) to non-zero to indicate that the current transfer should be
+aborted.&nbsp; Note that aborting a transfer will often cause the remote server
+to not only stop sending over the data connection, but it may also disconnect
+your FTP session altogether.<p>Besides providing a way for you to abort a
+transfer in progress, progress meter functions also provide a way for you to
+have your code do something else while the transfer proceeds.&nbsp; This can be
+something related to the transfer, such as drawing a bar graph on screen, or
+something totally unrelated.<h4><a name="f_DNS_information_fields">DNS
+information fields</a></h4>
+
+<p>When the library connects to the FTP server you designate with the <tt><a href="#f_host">host</a></tt>
+field, the library does a DNS lookup and stores the actual DNS hostname for the <tt>host</tt>
+in <tt>actualHost</tt>, and an IP address string in <tt>ip</tt>.
+
+<h4><a name="f_Starting_directory_fields">Starting directory fields</a></h4>
+
+<p>One of the first things the library does after successfully logging
+in to a remote server is determine the current working directory. The <tt>startingWorkingDirectory</tt>
+is set as a result. It may be NULL if the login failed.&nbsp; This is often the
+root directory if you are performing an anonymous login.&nbsp; For user logins,
+it is often the home directory of the user.
+
+<h4><a name="f_Piggyback_fields">Piggyback fields</a></h4>
+
+<p>Near the end of the structure the library provides a few fields for private
+use by the programmer.&nbsp; A common use for these fields is to set one to
+contain a pointer to another structure which you want to associate with the
+library structure without having to use a global variable.<p>The <tt>iUser</tt>
+is an integer, the <tt>pUser</tt> is a <tt>void</tt> pointer, and the <tt>llUser</tt>
+is a <tt>longest_int</tt> field.<br>
+<h3>
+Working with <a name="LineLists"> FTPLineLists</a></h3>
+Some of the library routines work with a <tt>FTPLineList</tt> structure. This
+is simply a linked-list of dynamically allocated C-strings.
+<blockquote>
+<pre>typedef struct FTPLine *FTPLinePtr;
+typedef struct FTPLine {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTPLinePtr prev, next;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char *line;
+} FTPLine;
+
+typedef struct FTPLineList {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTPLinePtr first, last;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nLines;
+} FTPLineList, *FTPLineListPtr;</pre>
+</blockquote>
+Here is an example use that shows how to print the contents of a remote
+wildcard match:
+<blockquote>
+<pre>FTPLineList fileList;
+FTPLinePtr lp;
+int i, err;
+
+err = FTPRemoteGlob(cip, &amp;fileList, &quot;*.c&quot;, &amp;fileList, kGlobYes);
+if (err == kNoErr) {
+&nbsp;&nbsp;&nbsp; for (lp = fileList.first, i=0; lp != NULL; lp = lp-&gt;next) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ++i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;item #%d: %s\n&quot;, i, lp-&gt;line);
+&nbsp;&nbsp;&nbsp; }
+}
+
+DisposeLineListContents(&amp;list);</pre>
+</blockquote>
+
+<p>
+&nbsp;</p>
+
+<h3>
+Working with <a name="LineLists"> longest_ints</a></h3>
+Some of the library routines work with <tt>longest_int</tt> variables.&nbsp; The
+<tt>longest_int</tt> is actually a <tt>#define</tt> to the largest integral type
+your compiler supports -- you can see this by browsing the <tt>&lt;ncftp.h&gt;</tt>
+header file.&nbsp; When you built <i>LibNcFTP</i> from the source code, the
+configure script ran a test and modified your copy of the <tt>ncftp.h</tt>
+header file to reflect the correct definition of <tt>longest_int</tt>.
+<p>Hopefully your <tt>longest_int</tt> will be at least a 64-bit value, such as
+&quot;<tt>long long</tt>&quot;, otherwise it will fallback to being a 32-bit
+value, &quot;<tt>long</tt>&quot;.&nbsp; If <tt>longest_int</tt> is only 32-bit,
+then <i>Large File Support</i> will be unavailable on your system which will
+effect your capability to work with files larger than 2 gigabytes.</p>
+<p>Use longest_int and <tt>longest_uint</tt> variables just as you would with <tt>int</tt>
+or unsigned <tt>int</tt> variables.&nbsp; Be cognizant when casting to and from <tt>longest_int</tt>
+variables, since this could result in truncation similar to the effect of
+miscasting <tt>shorts</tt> and <tt>longs</tt>.&nbsp; In effect, you can do:</p>
+<blockquote>
+  <pre>int x = 1234567;
+longest_int y;
+
+y = (longest_int) x;</pre>
+</blockquote>
+<p>But you cannot do:</p>
+<blockquote>
+  <pre>int x;
+longest_int y = 990000000003LL;
+
+x = (int) y;</pre>
+</blockquote>
+<p>You also must take care when passing <tt>longest_ints</tt> to the C library
+functions in the <tt>printf()</tt> and <tt>scanf()</tt> family.&nbsp; You will
+need to know your operating system's method of printing and scanning 64-bit
+values.&nbsp; <i>Usually</i> for UNIX systems you use &quot;<tt>%lld</tt>&quot;, and on
+Microsoft Windows you use &quot;<tt>%I64d</tt>&quot;.&nbsp; If the manual pages
+for <tt>printf()</tt> and <tt>scanf()</tt> aren't helpful, you can look at the <tt>libncftp/config.h</tt>
+file in your extracted and configured <i>LibNcFTP</i> source code -- look for <tt>PRINTF_LONG_LONG</tt>
+and <tt>SCANF_LONG_LONG</tt>.</p>
+
+<p>
+&nbsp;</p>
+<h3><a name="FtwInfo">FtwInfo</a></h3>
+The &quot;file tree walk&quot; (<tt><a href="#Ftw_Functions">Ftw</a></tt>)
+family of functions work with a <tt>FtwInfo</tt> structure, which looks like
+this:
+<blockquote>
+  <pre>typedef struct FtwInfo {
+        unsigned int init;
+        FtwProc proc;
+        char *<a href="#f_curPath">curPath</a>;
+        size_t <a href="#f_curPathLen">curPathLen</a>;
+        size_t curPathAllocSize;
+        size_t <a href="#f_startPathLen">startPathLen</a>;
+        char *<a href="#f_curFile">curFile</a>;
+        size_t <a href="#f_curFileLen">curFileLen</a>;
+        int <a href="#f_curType">curType</a>;
+        struct Stat <a href="#f_curStat">curStat</a>;
+        int noAutoMallocAndFree;
+        int dirSeparator;
+        char rootDir[4];
+        int autoGrow;
+        size_t <a href="#f_depth">depth</a>;
+        size_t <a href="#f_maxDepth">maxDepth</a>;
+        size_t <a href="#f_numDirs">numDirs</a>;
+        size_t <a href="#f_numFiles">numFiles</a>;
+        size_t <a href="#f_numLinks">numLinks</a>;
+        int reserved;
+        void *<a href="#f_ftw_cip">cip</a>;
+        void *<a href="#f_ftw_userdata">userdata</a>;
+} FtwInfo;</pre>
+</blockquote>
+<p>Do <b>not</b> use the <tt>init</tt>, <tt>proc</tt>, <tt>curPathAllocSize</tt>,
+<tt>noAutoMallocAndFree</tt>, <tt>dirSeparator</tt>, <tt>rootDir</tt>, or
+reserved fields.</p>
+<p>The proc field is of type <tt><a name="FtwProc">FtwProc</a></tt>, which is:
+<blockquote>
+  <pre>typedef int (*FtwProc)(const FtwInfoPtr ftwip);</pre>
+</blockquote>
+<p>Your <tt>FtwProc</tt> is called during <tt>Ftw</tt> functions, and it should
+return (-1) if they should abort directory traversal, or 0 if they should
+continue to iterate through the directory tree.</p>
+<p>You may use the following fields only from within your <tt>FtwProc</tt>
+callback function:</p>
+<blockquote>
+  <p>The <tt><a name="f_curPath">curPath</a></tt> field is a C-string which
+  contains the complete or relative pathname of the file or directory.&nbsp;
+  Important: treat this field as read-only!</p>
+  <p><tt><a name="f_curPathLen">curPathLen</a></tt> is the length of the string
+  (i.e. <tt>strlen(curPath)</tt>).</p>
+  <p><tt><a name="f_startPathLen">startPathLen</a></tt> is the length of the 
+  starting directory.  An easy way to compute pathnames relative to the
+  starting directory is to simply use <tt>curPath + startPathLen + 1</tt>.</p>
+  <p><tt><a name="f_curFile">curFile</a></tt> is the filename-only portion of
+  the pathname (also known as the basename of the path).&nbsp; Note that <tt>curFile</tt>
+  is really an offset into <tt>curPath</tt> (so do not modify <tt>curFile</tt>).</p>
+  <p><tt><a name="f_curFileLen">curFileLen</a></tt> is the length of <tt>curFile</tt>.</p>
+  <p><tt><a name="f_curType">curType</a></tt> will be set to <tt>'d'</tt> if the
+  pathname is a directory, <tt>'-'</tt> for a regular file, or <tt>'l'</tt> for
+  a symbolic link.&nbsp; This corresponds to the first character in the lines
+  from UNIX &quot;<tt>ls -l</tt>&quot;.</p>
+  <p><tt><a name="f_curStat">curStat</a></tt> contains useful information such
+  as the modification timestamp, file size, etc.</p>
+  <p><tt><a name="f_depth">depth</a></tt> is the current subdirectory recursion
+  level, i.e., how deep into the directory tree you are.&nbsp; You may want to
+  monitor the <tt>depth</tt> from your <tt>FtwProc</tt> and have your function
+  return an error if the depth gets too deep.</p>
+  <p><tt><a name="f_ftw_cip">cip</a></tt> is a pointer to your <tt>FTPConnectionInfo</tt>
+  structure, but only if your <tt>FtwProc</tt> was called by <tt><a href="#FTPFtw">FTPFtw</a></tt>.</p>
+  <p><a name="f_ftw_userdata">userdata</a> is a variable given to you for
+  private use, so you can set it to whatever you like.&nbsp; This can be useful
+  if you need to access other parts of your program from within your <tt>FtwProc</tt>
+  without having to declare a global variable.</p>
+</blockquote>
+<p>The following fields are kept as statistics and may be monitored from within
+your <tt>FtwProc</tt> callback function, and also after you call <tt><a href="#Ftw">Ftw</a></tt>
+or <tt><a href="#FTPFtw">FTPFtw</a></tt>.&nbsp; You will need to cast it to a <tt>FTPCIPtr</tt>
+before using it.</p>
+<blockquote>
+  <p><tt><a name="f_maxDepth">maxDepth</a></tt> is the deepest level reached
+  into the directory tree.</p>
+  <p><tt><a name="f_numDirs">numDirs</a></tt> is the number of items that were
+  directories.</p>
+  <p><tt><a name="f_numFiles">numFiles</a></tt> is the number of items that were
+  regular files.</p>
+  <p><tt><a name="f_numLinks">numLinks</a></tt> is the number of items that were
+  symbolic links.</p>
+</blockquote>
+
+<hr>
+<a NAME="func"></a>
+<a NAME="Functions"></a>
+<h2>Function reference</h2>
+
+<ul>
+<table cellspacing="5" cellpadding="2">
+	<tr>
+		<td><A HREF="#FTPAbortDataTransfer"><small>FTPAbortDataTransfer</small></A></td>
+		<td><A HREF="#FTPGetOneFile3"><small>FTPGetOneFile3</small></A></td>
+		<td><A HREF="#FTPRmdir"><small>FTPRmdir</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPChdir"><small>FTPChdir</small></A></td>
+		<td><A HREF="#FTPInitConnectionInfo"><small>FTPInitConnectionInfo</small></A></td>
+		<td><A HREF="#FTPShutdownHost"><small>FTPShutdownHost</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPChdirAndGetCWD"><small>FTPChdirAndGetCWD</small></A></td>
+		<td><A HREF="#FTPInitLibrary"><small>FTPInitLibrary</small></A></td>
+		<td><A HREF="#FTPStrError"><small>FTPStrError</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPChdir3"><small>FTPChdir3</small></A></td>
+		<td><A HREF="#FTPIsDir"><small>FTPIsDir</small></A></td>
+		<td><A HREF="#FTPStrError2"><small>FTPStrError2</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPChdirList"><small>FTPChdirList</small></A></td>
+		<td><A HREF="#FTPIsRegularFile"><small>FTPIsRegularFile</small></A></td>
+		<td><A HREF="#FTPSymlink"><small>FTPSymlink</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPChmod"><small>FTPChmod</small></A></td>
+		<td><A HREF="#FTPList"><small>FTPList</small></A></td>
+		<td><A HREF="#FTPUmask"><small>FTPUmask</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPCloseHost"><small>FTPCloseHost</small></A></td>
+		<td><A HREF="#FTPListToMemory"><small>FTPListToMemory</small></A></td>
+		<td><A HREF="#FTPUtime"><small>FTPUtime</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPCmd"><small>FTPCmd</small></A></td>
+		<td><A HREF="#FTPListToMemory2"><small>FTPListToMemory2</small></A></td>
+		<td><A HREF="#CopyLineList"><small>CopyLineList</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPDecodeURL"><small>FTPDecodeURL</small></A></td>
+		<td><A HREF="#FTPLocalGlob"><small>FTPLocalGlob</small></A></td>
+		<td><A HREF="#DisposeLineListContents"><small>DisposeLineListContents</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPDelete"><small>FTPDelete</small></A></td>
+		<td><A HREF="#FTPLoginHost"><small>FTPLoginHost</small></A></td>
+		<td><A HREF="#InitLineList"><small>InitLineList</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFileExists"><small>FTPFileExists</small></A></td>
+		<td><A HREF="#FTPMkdir"><small>FTPMkdir</small></A></td>
+		<td><A HREF="#RemoveLine"><small>RemoveLine</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFileModificationTime"><small>FTPFileModificationTime</small></A></td>
+		<td><A HREF="#FTPOpenHost"><small>FTPOpenHost</small></A></td>
+		<td><A HREF="#AddLine"><small>AddLine</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFileSize"><small>FTPFileSize</small></A></td>
+		<td><A HREF="#FTPOpenHostNoLogin"><small>FTPOpenHostNoLogin</small></A></td>
+		<td><A HREF="#FtwInit"><small>FtwInit</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFileSizeAndModificationTime"><small>FTPFileSizeAndModificationTime</small></A></td>
+		<td><A HREF="#FTPPerror"><small>FTPPerror</small></A></td>
+		<td><A HREF="#FtwDispose"><small>FtwDispose</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFileType"><small>FTPFileType</small></A></td>
+		<td><A HREF="#FTPPutFiles3"><small>FTPPutFiles3</small></A></td>
+		<td><A HREF="#Ftw"><small>Ftw</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPFtw"><small>FTPFtw</small></A></td>
+		<td><A HREF="#FTPPutOneFile3"><small>FTPPutOneFile3</small></A></td>
+		<td><A HREF="#FtwSetBuf"><small>FtwSetBuf</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPGetCWD"><small>FTPGetCWD</small></A></td>
+		<td><A HREF="#FTPRemoteGlob"><small>FTPRemoteGlob</small></A></td>
+	</tr>
+	<tr>
+		<td><A HREF="#FTPGetFiles3"><small>FTPGetFiles3</small></A></td>
+		<td><A HREF="#FTPRename"><small>FTPRename</small></A></td>
+	</tr>
+</table>
+</ul>
+
+<hr>
+<center>
+<h3>
+FTP functions</h3></center>
+
+<h4>
+<a NAME="FTPAbortDataTransfer"></a>FTPAbortDataTransfer</h4>
+
+<ul><tt>void FTPAbortDataTransfer(const FTPCIPtr cip);</tt>
+<p>Prior versions of the library advised you to call this function
+directly.&nbsp; The new recommendation is to use a progress meter function, and
+if you would like to abort a transfer in progress, set the <tt>cancelXfer</tt>
+field to 1 (in the <tt>FTPCIPtr</tt> passed to your progress meter callback
+function).&nbsp; This gives you the capability of aborting a transfer without
+having to use a signal handler, and gives the library a better chance of
+aborting the transfer at a point where the server won't abruptly disconnect the
+entire session.<p>Nevertheless, you can call this function yourself if you
+  must.&nbsp; Note that not doing this from a progress meter callback (in which
+  case you should use the method described above) essentially means you'll be
+  doing this from a signal handler, which is generally undesirable.</ul>
+
+<h4>
+<a NAME="FTPChdir"></a>FTPChdir</h4>
+
+<ul><tt>int FTPChdir(const FTPCIPtr cip, const char *const cdCwd);</tt>
+<p>Changes the current remote working directory to the path specified by
+<tt>cdCwd</tt>.&nbsp;
+The path is system-dependent, so it need not be a UNIX-style path if the
+system you are connected to is not a UNIX system.
+<p>If the change succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.
+<p>When you first connect, the default working directory is assumed to
+be the root directory for anonymous FTP access. For a user login, the default
+is often the home directory of the user.</ul>
+
+<h4>
+<a NAME="FTPChdirAndGetCWD"></a>FTPChdirAndGetCWD</h4>
+
+<ul><tt>int FTPChdirAndGetCWD(const FTPCIPtr cip, const char *const cdCwd,
+char *const newCwd, const size_t newCwdSize);</tt>
+<p>This is a combination of <a href="#FTPChdir"><tt>FTPChdir</tt></a> and
+<a href="#FTPGetCWD"><tt>FTPGetCWD</tt></a>.
+The reason this can be useful is that some servers return the new path
+after a change of directory, thus saving a <tt>PWD</tt>.
+<p>If the change succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a name="FTPChdir3"></a>FTPChdir3</h4>
+
+<ul><tt>int FTPChdir3(FTPCIPtr cip, const char *const cdCwd, char *const newCwd, const size_t newCwdSize, int flags);</tt>
+<p>Changes the current remote working directory to the path specified by
+<tt>cdCwd</tt>.&nbsp;
+The path is system-dependent, so it need not be a UNIX-style path if the
+system you are connected to is not a UNIX system.
+<p>This is a more advanced version of <tt><a href="#FTPChdir">FTPChdir</a></tt>, which is controlled by the flags
+parameter.&nbsp; The flags must be either 0 (<tt>kChdirOnly</tt>), or a bitwise-OR of one
+or more of the following:</p>
+
+<ul type="disc">
+<li><p><tt>kChdirAndMkdir</tt> - Change to the directory, creating it if
+  necessary.</p></li>
+
+<li><p><tt>kChdirAndGetCWD</tt> - Change to the directory, and note the new full
+  working directory in the newCwd parameter.</p></li>
+
+<li><p><tt>kChdirOneSubdirAtATime</tt> - Change to the directory, one
+  sub-directory at a time.&nbsp; For example, if the directory was &quot;<tt>pub/FreeBSD/ISO-IMAGES</tt>&quot;,
+  it would essentially be doing &quot;<tt>cd pub</tt>&quot; followed by &quot;<tt>cd
+  FreeBSD</tt>&quot; followed by &quot;<tt>cd ISO-IMAGES</tt>&quot;.</p></li>
+
+<li><p><tt>kChdirFullPath</tt> - Change to the directory, as one complete
+  pathname, i.e. &quot;<tt>cd pub/FreeBSD/ISO-IMAGES</tt>&quot;.</p></li>
+</ul>
+
+<p>The <tt>kChdirOneSubdirAtATime</tt> option is useful for strict RFC 1738 URL
+compliance.&nbsp; However, if strict compliance is not required, it is
+recommended that you use both <tt>kChdirOneSubdirAtATime</tt> and <tt>kChdirFullPath</tt>,
+i.e. (<tt>kChdirFullPath|kChdirOneSubdirAtATime</tt>).&nbsp; This would have the
+library attempt to change to the complete path, and if that fails, then fallback
+and try one subdirectory at a time.
+
+<p>If <tt>kChdirAndGetCWD</tt> is not used, then you may pass NULL for <tt>newCwd</tt>
+and 0 for <tt>newCwdSize</tt>.
+</ul>
+
+<h4>
+<a name="FTPChdirList"></a>FTPChdirList</h4>
+
+<ul><tt>int FTPChdirList(FTPCIPtr cip, FTPLineListPtr const cdlist, char *const newCwd, const size_t newCwdSize, int flags);</tt>
+<p>This is identical to <tt><a href="#FTPChdir3">FTPChdir3</a></tt>, only
+instead of a pathname (which can be thought of as a list of subdirectory nodes)
+you pass a <tt><a href="#LineList">FTPLineList</a></tt> with each line being one
+subdirectory node.
+<p>Odds are you won't use this function, unless you use <tt><a href="#FTPDecodeURL">FTPDecodeURL</a></tt>
+which provides you with a <tt>FTPLineList</tt> as the directory path component.
+</ul>
+
+<h4>
+<a NAME="FTPChmod"></a>FTPChmod</h4>
+
+<ul><tt>int FTPChmod(const FTPCIPtr cip, const char *const pattern, const
+char *const mode, const int doGlob);</tt>
+<p>This is equivalent of the UNIX <tt>/bin/chmod</tt> program, only for
+remote files. This is not in the FTP standard, but many UNIX hosts implement
+this as a site-specific command.
+<p>If the mode change succeeded, 0 is returned, otherwise a number less
+than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPCloseHost"></a>FTPCloseHost</h4>
+
+<ul><tt>int FTPCloseHost(const FTPCIPtr cip);</tt>
+<p>Closes the connection to the current host, and disposes the library's
+data structures associated with it. This function may block because the
+remote server is notified that we want to close the connection via the
+FTP protocol command &quot;<tt>QUIT</tt>&quot; and a reply to that command is read back before
+cleanup is complete.
+<p>Upon a normal close, 0 is returned, otherwise if something bizarre happened
+a number less than zero is returned.</ul>
+
+<h4>
+<a NAME="FTPCmd"></a>FTPCmd</h4>
+
+<ul><tt>int FTPCmd(const FTPCIPtr cip, const char *const cmdspec, ...);</tt>
+<p>This allows you to issue an FTP command directly on the control connection.
+You do not get back the textual response string, but you are returned the
+first digit of the numeric response, which will be from 1 to 5, or a negative
+error code.
+<p>The function behaves like <tt>printf</tt>, so you can pass a variable
+number of parameters.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; idleAmt = 300;
+&nbsp;&nbsp;&nbsp; err = FTPCmd(cip, &quot;SITE IDLE %d&quot;, idleAmt);
+&nbsp;&nbsp;&nbsp; if (err == 2) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* success */
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a NAME="FTPDecodeURL"></a>FTPDecodeURL</h4>
+
+<ul><tt>int FTPDecodeURL(const FTPCIPtr cip, char *const url, FTPLineListPtr
+cdlist, char *const fn, const size_t fnsize, int *const xtype, int *const
+wantnlst);</tt>
+<p>The purpose of this function is to parse a RFC 1738 FTP URL, such as
+<tt>ftp://ftp.ncftp.com/pub/ncftp/README</tt>.
+The URL is of the form
+<tt>ftp://&lt;user>:&lt;password>@&lt;host>:&lt;port>/&lt;url-path>&lt;;type></tt>.
+<p>Upon return, it will return a &quot;<tt>chdir</tt> list&quot; (<tt><a href="#LineList">FTPLineList</a>)</tt>, with each line representing
+one directory level. This is required by RFC 1738, so that instead of doing
+a
+<tt>chdir /pub/ncftp</tt>, you need to do a <tt>chdir pub</tt> followed
+by a <tt>chdir ncftp</tt>.&nbsp; See <a href="#FTPChdirList"><tt>FTPChdirList</tt></a>
+for an easy way to change to <tt>chdir</tt> list.
+<p>It returns an integer indicating if the URL was successfully parsed.
+Zero means success, while the error code <tt>kMalformedURL</tt> means that
+it appeared to be a URL, but it had syntax errors. The error code
+<tt>kNotURL</tt>
+means that it didn't even resemble a URL at all.
+<p>The <tt>fn</tt> parameter points to a string to hold the filename for
+the requested file. For the example above, it would be set to "<tt>README</tt>".
+For a directory URL, this will be set to an empty string. The <tt>fnsize</tt>
+parameter should be the maximum size of the <tt>fn</tt> buffer.
+<p>Besides giving you back a <tt>chdir</tt> list, it may also set the <tt>user</tt>,
+<tt>pass</tt>,
+and <tt>port</tt> field of the connection structure, if the URL contains
+those fields, and optionally the transfer type or whether the URL should
+be a directory listing.
+<p>If the <tt>xtype</tt> parameter is not NULL, it will write whether the
+transfer type was specified, as either <tt>kTypeAscii</tt> or <tt>kTypeBinary</tt>.
+If the <tt>wantnlst</tt> parameter is not NULL, it will write whether the
+user requested a listing instead of a download of that directory.
+<p>The <tt>url</tt> is modified by the function, so make a copy of it if
+you need to preserve the contents.
+<p><i>Example:</i>
+<ul>
+<pre>rc = FTPDecodeURL(&amp;ci, url, &amp;cdlist, urlfile, sizeof(urlfile),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;xtype, NULL);
+if (rc == kMalformedURL) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Malformed URL: %s\n&quot;, url);
+} else if (rc == kNotURL) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Not a URL: %s\n&quot;, url);
+} else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* URL okay */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;open %s %u\n&quot;, ci.host, (unsigned int) ci.port);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;user %s\n&quot;, ci.user);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ci.pass[0] != '\0')
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;pass %s\n&quot;, ci.pass);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (lp = cdlist.first; lp != NULL; lp = lp-&gt;next)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;cd %s\n&quot;, lp-&gt;line);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;type %c\n&quot;, xtype);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (urlfile[0] != '\0')
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;get %s\n&quot;, urlfile);
+}</pre>
+</ul>
+</ul>
+
+<h4>
+<a NAME="FTPDelete"></a>FTPDelete</h4>
+
+<ul><tt>int FTPDelete(const FTPCIPtr cip, const char *const pattern, const
+int recurse, const int doGlob);</tt>
+<p>Removes remote files on the remote system, like <tt>/bin/rmdir</tt>
+does locally. This can also delete entire directories, if recursion is
+specified.
+<p>The <tt>doGlob</tt> parameter must be set to either <tt>kGlobYes</tt>
+or
+<tt>kGlobNo</tt>.&nbsp; When set, the <tt>pattern</tt> is considered
+a shell-wildcard-style regular expression.
+<p>The <tt>recurse</tt> parameter must be set to either <tt>kRecursiveYes</tt>
+or <tt>kRecursiveNo</tt>.&nbsp; When set, the library attempts to remove
+all files and subdirectories also (i.e. like <tt>/bin/rm -rf</tt> on UNIX).
+<p><i>Example 1:</i> Delete all files in the current directory whose names
+end in "<tt>.zip</tt>."
+<pre>&nbsp;&nbsp;&nbsp; err = FTPDelete(cip, &quot;*.zip&quot;, kRecursiveNo, kGlobYes);</pre>
+<i>Example 2:</i> Delete one file whose name is &quot;<tt>*README*</tt>&quot;, but not files
+named "<tt>README</tt>" nor &quot;<tt>*README-NOW*</tt>&quot;.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPDelete(cip, &quot;*README*&quot;, kRecursiveNo, kGlobNo);</pre>
+If all deletions succeeded, 0 is returned, otherwise a number less than
+zero is returned if one or more deletions failed. All files matched are
+attempted to be deleted, so if one deletion fails, that does not cause
+the remaining list to be aborted.</ul>
+
+<h4>
+<a NAME="FTPFileExists"></a>FTPFileExists</h4>
+
+<ul><tt>int FTPFileExists(const FTPCIPtr cip, const char *const file);</tt>
+<p>This tries to determine if a file or directory specified in the <tt>file</tt>
+parameter exists on the remote server.
+<p>Unfortunately this can be a very expensive operation on older servers
+because there was no standard functionality available in the protocol specification.
+On these servers, the library tries a variety of methods until it succeeds
+or exhausts the list. The good news is that once the library has found
+a reliable way that works on the remote server, it remembers this for subsequent
+iterations so it does not need to repeat the learning process.
+<p>If the item exists, 0 (<tt>kNoErr</tt>) is returned. If the server has
+a reliable way to determine file existence and the file did not exist,
+<tt>kErrNoSuchFileOrDirectory</tt>
+is returned. Otherwise, the result is inconclusive and a negative error
+code is returned.</ul>
+
+<h4>
+<a NAME="FTPFileModificationTime"></a>FTPFileModificationTime</h4>
+
+<ul><tt>int FTPFileModificationTime(const FTPCIPtr cip, const char *const
+file, time_t *const mdtm);</tt>
+<p>This tries to determine the last modification timestamp of the remote
+file specified by <tt>file</tt>.
+<p>This may or may not work, because this relies upon the implementation
+of the "<tt>MDTM</tt>" low-level FTP command. There are still a lot of traditional
+servers out there that do not support it nor the &quot;<tt>SIZE</tt>&quot; command.
+<p>There may also be a question of whether the time returned is in local
+time or GMT. Unfortunately this also varies among servers, most likely
+because there are no formal specifications of <tt>MDTM</tt> in RFC-959.
+<p>If the query succeeded, 0 is returned and the <tt>mdtm</tt> parameter
+is set to the timestamp of last modification, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPFileSize"></a>FTPFileSize</h4>
+
+<ul><tt>int FTPFileSize(const FTPCIPtr cip, const char *const file, longest_int
+*const size, const int type);</tt>
+<p>This tries to determine how many bytes would be transferred if you downloaded
+<tt>file</tt>.
+The size in bytes is returned in the <tt>size</tt> parameter. The <tt>type</tt>
+parameter exists because this number varies depending on the transfer type.
+Set it to
+<tt>kTypeBinary</tt>, <tt>kTypeAscii</tt>, or
+<tt>kTypeEbcdic</tt>.
+<p>If the query succeeded, 0 is returned and the <tt>size</tt> parameter
+is set, otherwise a number less than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPFileSizeAndModificationTime"></a>FTPFileSizeAndModificationTime</h4>
+
+<ul><tt>int FTPFileSizeAndModificationTime(const FTPCIPtr cip, const char
+*const file, longest_int *const size, const int type, time_t *const mdtm);</tt>
+<p>This function is a hybrid of <a href="#FTPFileSize"><tt>FTPFileSize</tt></a>
+and
+<a href="#FTPFileModificationTime"><tt>FTPFileModificationTime</tt></a>. Some
+newer FTP servers have the capability to return both of these values at
+the same time, so it is more efficient than doing them individuallly. This
+tries to determine how many bytes would be transferred if you downloaded
+<tt>file</tt>.
+The size in bytes is returned in the <tt>size</tt> parameter. The <tt>type</tt>
+parameter exists because this number varies depending on the transfer type.
+Set it to
+<tt>kTypeBinary</tt>,
+<tt>kTypeAscii</tt>, or
+<tt>kTypeEbcdic</tt>.
+<p>The <tt>mdtm</tt> parameter is set to the time of last modification
+for the file or directory specified.
+<p>If the query succeeded, 0 is returned and the <tt>size</tt> and <tt>mdtm</tt>
+parameters are set, otherwise a number less than zero is returned if both
+could not be determined.</ul>
+
+<h4>
+<a NAME="FTPFileType"></a>FTPFileType</h4>
+
+<blockquote><tt>int FTPFileType(const FTPCIPtr cip, const char *const file,
+int *const ftype);</tt>
+<p>This function can be used to determine if a particular pathname is a
+directory or regular file.&nbsp; It returns <tt>'d'</tt> in the <tt>ftype</tt> parameter
+if the item was a directory, or <tt>'-'</tt> if it was a regular file.&nbsp;
+The <tt>ftype</tt> parameter return result should only be used if the function
+returns 0 (<tt>kNoErr</tt>).&nbsp; If the item exists but the type could
+not be determined, the error code <tt>kErrFileExistsButCannotDetermineType</tt>
+is returned.&nbsp; Other types of errors are returned as negative error
+codes.
+<p>This function calls <a href="#FTPFileExists"><tt>FTPFileExists</tt></a>, which
+may be an expensive call.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPConnectionInfo ci;
+&nbsp;&nbsp;&nbsp; int ftype, result;
+
+&nbsp;&nbsp;&nbsp; if ((result = FTPFileType(&amp;ci, &quot;/pub/linux&quot;, &amp;ftype)) == kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ftype == 'd')
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;It was a directory.\n&quot;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;It was a file.\n&quot;);
+&nbsp;&nbsp;&nbsp; } else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;An error occurred (%d).\n&quot;, result);
+&nbsp;&nbsp;&nbsp; }</pre>
+</blockquote>
+
+<h4><a name="FTPFtw"></a>FTPFtw</h4>
+
+<ul><tt>int FTPFtw(const FTPCIPtr cip, const FtwInfoPtr ftwip, const char *const
+  dir, FtwProc proc);</tt><p>This can be used like the C library function
+  <tt>ftw()</tt>, except it works on the
+remote server rather than the local machine.&nbsp; &quot;Ftw&quot; stands for &quot;file
+tree walk&quot; and like the <tt>ftw()</tt> function, this function provides you an
+opportunity to recurse through an entire directory and process each file
+within it.
+<p>This function is actually the remote version of the <tt><a href="#Ftw">Ftw</a></tt>
+function.&nbsp; The setup and necessary details for <tt>FTPFtw</tt> are the same
+as <tt>Ftw</tt>, so refer to <tt><a href="#Ftw">Ftw</a></tt> for more
+information.
+<p>The <tt>dir</tt> parameter specifies the remote directory tree to walk.<p>The
+  <tt>proc</tt>
+  parameter is a callback to a custom function which you provide.&nbsp; This
+  function will be called by <tt>FTPFtw</tt> for file or directory in the tree.&nbsp; A
+  <tt>proc</tt> is of the <tt>FtwProc</tt> type, which is:
+  <blockquote>
+    <pre>typedef int (*FtwProc)(const FtwInfoPtr ftwip);</pre>
+  </blockquote>
+  <p>When your <tt>FtwProc</tt> is called by <tt>FTPFtw</tt> on a remote
+  directory tree, there are some slight differences than when it is called by <tt>Ftw</tt>
+  on a local directory tree.&nbsp; The primary difference is that the <tt><a href="#f_curStat">curStat</a></tt>
+  field (which is of type <tt>struct stat</tt>) of the <tt><a href="#FtwInfo">FtwInfo</a></tt>
+  structure is not entirely populated.&nbsp; The reason is that <tt>FTPFtw</tt>
+  has to simulate <tt>stat()</tt> on the remote filesystem, whereas <tt>Ftw</tt>
+  can actually call <tt>stat()</tt> and get all the information.<p>Specifically,
+  you should only use the <tt>st_mode</tt>, <tt>st_size</tt> and <tt>st_mtime</tt>
+  fields.&nbsp; In addition, <tt>st_size</tt> and <tt>st_mtime</tt> may not be
+  available if the remote FTP server doesn't support <tt>SIZE</tt> or <tt>MDTM</tt>,
+  but you can check the field values against <tt>kSizeUnknown</tt> and <tt>kModTimeUnknown</tt>
+  respectively.&nbsp; You may find that <tt>st_size</tt> is invalid for a
+  directory, or <tt>st_mtime</tt> is invalid for a directory (<i>wu-ftpd</i> is
+  one example of a server that doesn't let you do <tt>MDTM</tt> on a directory).<p>The
+  <tt>st_mode</tt> field is primarily populated so you can do <tt>S_ISDIR(st.st_mode)</tt>
+  and <tt>S_ISREG(st.st_mode)</tt> like you would be accustomed to.&nbsp; The
+  actual permission bits will be obtained if possible, but you shouldn't rely
+  upon the presence or validity of these bits.<p><tt>FTPFtw</tt> tries a variety
+  of methods to figure out how to recurse a remote directory using the FTP
+  protocol, but since the protocol doesn't formally specify a mechanism to do
+  that, <tt>FTPFtw</tt> may not be able to traverse the directory structure if a
+  remote FTP server doesn't support enough functionality to enable <tt>FTPFtw</tt>
+  to do this.<p>Compounding this problem, the FTP protocol does not provide a
+  mechanism to detect symbolic links.&nbsp; <tt>FTPFtw</tt> can sometimes detect
+  links depending on the server software, but some servers could fool <tt>FTPFtw</tt>
+  into following a symbolic link to another directory which may result in
+  infinite recursion!&nbsp; To prevent this, your <tt>FtwProc</tt> should check
+  the depth field and return an error if the remote directory tree is getting
+  too deep.
+<p>This function may call <a href="#FTPFileType"><tt>FTPFileType</tt></a>, which
+could be an expensive call.&nbsp; It may call it <i>numerous</i> times!&nbsp; In
+any event, <u>traversing a remote directory tree is a very expensive operation</u>.&nbsp;
+Be very careful and considerate when you use <tt>FTPFtw</tt>.<p><i>Example:</i>&nbsp;
+  Traverse &quot;<tt>/pub</tt>&quot; on the current remote host, and attempt to
+  remove any &quot;<tt>core</tt>&quot; files found.&nbsp; This is an abridged
+  example, but the library includes a more detailed example, <tt>ncftpftw.c</tt>,
+  in the samples directory.
+  <blockquote>
+    <pre>static int
+MyRemoteFtwProc(const FtwInfoPtr ftwip)
+{
+	FTPCIPtr cip = (FTPCIPtr) ftwip-&gt;cip;
+	longest_int fSize;
+	time_t fTime;
+
+	if (ftwip-&gt;depth &gt; 20) {
+		/* Prevent possible infinite recursion */
+		return (-1); 	/* cancel traversal */
+	}
+
+	if (ftwip-&gt;curType == 'd') {
+		printf(&quot;Directory: %s\n&quot;, ftwip-&gt;curPath);
+	} else if (ftwip-&gt;curType == 'l') {
+		printf(&quot;Symlink: %s\n&quot;, ftwip-&gt;curPath);
+	} else {
+		fSize = ftwip-&gt;curStat.st_size;
+		fTime = ftwip-&gt;curStat.st_mtime;
+		printf(&quot;File: %s (size=%lld, mtime=%u)\n&quot;,
+			ftwip-&gt;curPath, fSize, fTime);
+
+		if (strcmp(ftwip-&gt;curFile, &quot;core&quot;) == 0)
+			(void) FTPDelete(cip, ftwip-&gt;curPath, 0, 0);
+	}
+
+	return (0);	/* continue traversal */
+}	/* MyFtwProc */
+
+/* ... */
+{
+	FtwInfo ftwi;
+	int rc;
+
+	FtwInit(&amp;ftwi);
+	if ((rc = FTPFtw(cip, &amp;ftwi, &quot;/pub&quot;, MyRemoteFtwProc)) != 0) {
+		/* Traversal failed */
+		/* ... */
+	}
+
+	(void) printf(&quot;Stats: rc=%d #dirs=%u #files=%u #links=%u maxdepth=%u\n&quot;,
+		rc, ftwi.numDirs, ftwi.numFiles, ftwi.numLinks, ftwi.maxDepth);
+
+	FtwDispose(&amp;ftwi);
+}</pre>
+  </blockquote>
+</ul>
+
+<h4>
+<a NAME="FTPGetCWD"></a>FTPGetCWD</h4>
+
+<ul><tt>int FTPGetCWD(const FTPCIPtr cip, char *const newCwd, const size_t
+newCwdSize);</tt>
+<p>This writes up to <tt>newCwdSize</tt> bytes of the pathname of the current
+remote working directory in <tt>newCwd</tt>.
+<p>If the request succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPGetFiles"></a>FTPGetFiles,&nbsp;<a NAME="FTPGetFiles2"></a>FTPGetFiles2</h4>
+
+<ul><tt>int FTPGetFiles(const FTPCIPtr cip, const char *const pattern,
+const char *const dstdir, const int recurse, const int doGlob);</tt>
+<p><tt>int FTPGetFiles2(const FTPCIPtr cip, const char *const pattern,
+const char *const dstdir, const int recurse, const int doGlob, const int
+xtype, const int resumeflag, const int appendflag);</tt>
+<p>These functions have been superceded by
+<a href="#FTPGetFiles3"><tt>FTPGetFiles3</tt></a>
+and are only provided for backward-compatibility with code based off of
+older versions of the library.</ul>
+
+<h4>
+<a NAME="FTPGetFiles3"></a>FTPGetFiles3</h4>
+
+<ul><tt>int FTPGetFiles3(const FTPCIPtr cip, const char *pattern, const
+char *const dstdir, const int recurse, int doGlob, const int xtype, const
+int resumeflag, int appendflag, const int deleteflag, const int tarflag,
+const FTPConfirmResumeDownloadProc resumeProc, int reserved);</tt>
+<p>Downloads (reads) files from the remote system.
+<p>The <tt>pattern</tt> parameter is the remote pathname to download.&nbsp;
+When coupled with globbing, the pattern can denote a regular expression
+so that multiple files can be downloaded with a single wildcard expression.
+<p>The <tt>dstdir</tt> parameter is local directory where the files are
+to be written. If you want them placed in the current local directory,
+just use <tt>"."</tt> as the <tt>dstdir</tt>. The files retrieved are named
+to be the same as they were on the remote system.
+<p>The <tt>recurse</tt> parameter must be set to either <tt>kRecursiveYes</tt>
+or <tt>kRecursiveNo</tt>. When set the library attempts to download the
+entire directory structure if
+<tt>pattern</tt> is a directory.&nbsp; Recursion
+is not very portable; For it to work properly, the remote server must produce
+UNIX-like listings for the <tt>LIST</tt> primitive, and it must also support
+the &quot;<tt>-R</tt>&quot; flag (<tt>LIST -R</tt>). The good news is that many non-UNIX FTP
+servers do try to emulate that behavior.
+<p>The <tt>doGlob</tt> parameter must be set to either <tt>kGlobYes</tt>
+or
+<tt>kGlobNo</tt>. When set, the <tt>pattern</tt> is considered a shell
+wildcard-style regular expression, and
+<a href="#FTPRemoteGlob">FTPRemoteGlob</a>
+is used if needed to build a list of files to retrieve.
+<p>The <tt>xtype</tt> parameter must be set to either
+<tt>kTypeAscii</tt>
+or
+<tt>kTypeBinary</tt>.&nbsp; Unless the file is known to be stored in
+the host's native text format, where ASCII text translation to your host's
+text format would be useful, you should use binary transfer type.
+<p>The <tt>resumeflag</tt> parameter must be set to either <tt>kResumeYes</tt>
+or <tt>kResumeNo</tt>. When set, the library will attempt to resume the
+download. This is done if the local file already exists and is smaller
+than the remote file. In addition, the library tries to use modification
+times when possible to determine if this should be done.
+<p>The <tt>appendflag</tt> parameter must be set to either <tt>kAppendYes</tt>
+or <tt>kAppendNo</tt>. When set, the entire remote file is downloaded,
+and
+the local file is appended to, if present. Generally that is not very useful.
+<p>The <tt>deleteflag</tt>&nbsp; parameter must be set to either <tt>kDeleteYes</tt>
+or <tt>kDeleteNo</tt>. When set, after the file is downloaded successfully
+the remote file is deleted.&nbsp; This requires the applicable permissions
+on the remote file.
+<p>The <tt>tarflag</tt>&nbsp; parameter must be set to either <tt>kTarYes</tt>
+or <tt>kTarNo</tt>. When set and the <tt>recurse</tt> parameter is also set, the
+library attempts to see if the server supports "on-the-fly TAR" and uses
+that to transfer the entire directory.&nbsp; The advantages to this are
+two-fold; first, it will be faster since a separate data connection is
+not required for each file in the directory, and second, since it is a
+TAR file it also preserves the exact file permissions and timestamps.&nbsp;
+The downside to using this mode is that you always get the entire directory
+structure.&nbsp; There is no resumption of broken downloads.
+<p>The <tt>resumeProc</tt> parameter can be set to a callback function
+to give you fine-grained control on what to do when the local file already
+exists.&nbsp; Your function can determine whether to resume the download,
+overwrite and download the entire file, append to the local file, or skip
+the file transfer.&nbsp; This is useful for interactive programs where
+you want the user to choose which action to take.&nbsp; This parameter
+must be set to <tt>kNoFTPConfirmResumeDownloadProc</tt> to indicate you do
+not want a callback function, which is most of the time.&nbsp; Otherwise
+your callback function should be a valid <tt>FTPConfirmResumeDownloadProc</tt>,
+which is declared as follows:</p>
+
+<ul>
+<pre>typedef int (*FTPConfirmResumeDownloadProc)(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char *volatile *localpath,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int localsize,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile time_t localmtime,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char *volatile remotepath,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int remotesize,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile time_t remotetime,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int *volatile startPoint
+);</pre>
+</ul>
+<p>Your callback function should examine the parameters passed into it, and
+return one of the following result codes:</p>
+
+<ul type="disc">
+<li>
+<tt>kConfirmResumeProcSaidSkip</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidResume</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidOverwrite</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidAppend</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidBestGuess</tt></li>
+</ul>
+
+<p>Your callback function should also set the <tt>startPoint</tt> to
+the offset into the file where to resume the download at.&nbsp; You also
+have the option of changing the <tt>localpath</tt> parameter, which could
+be useful if your function decides it can save to a new name.
+<p>The <tt>reserved</tt> parameter must be set to zero.&nbsp; This is reserved
+for future use.
+<p>If all transfers succeeded, <tt>FTPGetFiles3</tt> returns 0 (<tt>kNoErr</tt>),
+otherwise a number less than zero is returned if one or more transfers
+failed. All files matched are attempted to be transferred, so if one fails,
+that does not cause the remaining list to be aborted.
+<p><i>Example 1:</i> Retrieve all files in the current directory whose
+names end in &quot;<tt>.zip</tt>&quot; and write them to the &quot;<tt>/tmp</tt>" local directory.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPGetFiles3(cip, &quot;*.zip&quot;, &quot;/tmp&quot;, kRecursiveNo, kGlobYes, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kResumeNo, kAppendNo, kDeleteNo, kTarNo, kNoFTPConfirmResumeDownloadProc, 0);</pre>
+<i>Example 2:</i> Fetch one file whose name is &quot;<tt>*README*</tt>&quot;, but not files
+named "<tt>README</tt>" nor &quot;<tt>*README-NOW*</tt>&quot;, and write it to the current local directory.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPGetFiles3(cip, &quot;*README*&quot;, &quot;.&quot;, kRecursiveNo, kGlobNo, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kResumeNo, kAppendNo, kDeleteNo, kTarNo, kNoFTPConfirmResumeDownloadProc, 0);</pre>
+<i>Example 3:</i> Fetch the entire contents of the directory &quot;<tt>/pub/zzz</tt>"
+into a local directory named &quot;<tt>/tmp/aaa/bbb/zzz</tt>:"
+<pre>&nbsp;&nbsp;&nbsp; err = FTPGetFiles3(cip, &quot;/pub/zzz&quot;, &quot;/tmp/aaa/bbb&quot;, kRecursiveYes, kGlobNo, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kResumeNo, kAppendNo, kDeleteNo, kTarNo, kNoFTPConfirmResumeDownloadProc, 0);</pre>
+</ul>
+
+<h4>
+<a NAME="FTPGetOneFile"></a>FTPGetOneFile,&nbsp;<a NAME="FTPGetOneFile2"></a>FTPGetOneFile2</h4>
+
+<ul><tt>int FTPGetOneFile(const FTPCIPtr cip, const char *const file, const
+char *const dstfile);</tt>
+<p><tt>int FTPGetOneFile2(const FTPCIPtr cip, const char *const file, const
+char *const dstfile, const int xtype, const int fdtouse, const int resumeflag,
+const int appendflag);</tt>
+<p>These functions have been superceded by <a href="#FTPGetOneFile3"><tt>FTPGetOneFile3</tt></a>
+and are only provided for backward-compatibility with code based off of
+older versions of the library.</ul>
+
+<h4>
+<a NAME="FTPGetOneFile3"></a>FTPGetOneFile3</h4>
+
+<ul><tt>int FTPGetOneFile3(const FTPCIPtr cip, const char *const file,
+const char *const dstfile, const int xtype, const int fdtouse, const int
+resumeflag, const int appendflag, const int deleteflag, const FTPConfirmResumeDownloadProc
+resumeProc, int reserved);</tt>
+<p>This is provides a way to download a single remote file and write it
+under a different name (if required) locally.
+<p>The <tt>file</tt> parameter specifies the remote file name to download,
+and the <tt>dstfile</tt> parameter specifies the local file name to save
+it as.
+<p>The <tt>xtype</tt> parameter must be set to either
+<tt>kTypeAscii</tt>
+or
+<tt>kTypeBinary</tt>.&nbsp; Unless the file is known to be stored in
+the host's native text format, where ASCII text translation to your host's
+text format would be useful, you should use binary transfer type.
+<p>The <tt>fdtouse</tt> parameter must be either an opened file descriptor
+for writing, or less than zero if the function should open the file as
+needed.&nbsp; Most of the time you will use (-1) for this parameter and
+let the library open the local file for you.
+<p>The <tt>resumeflag</tt> parameter must be set to either <tt>kResumeYes</tt>
+or <tt>kResumeNo</tt>. When set, the library will attempt to resume the
+download. This is done if the local file already exists and is smaller
+than the remote file. In addition, the library tries to use modification
+times when possible to determine if this should be done.
+<p>The <tt>appendflag</tt> parameter must be set to either <tt>kAppendYes</tt>
+or <tt>kAppendNo</tt>. When set, the entire remote file is downloaded,
+and the local file is appended to, if present. Generally that is not very
+useful.
+<p>The <tt>deleteflag</tt>&nbsp; parameter must be set to either <tt>kDeleteYes</tt>
+or <tt>kDeleteNo</tt>. When set, after the file is downloaded successfully
+the remote file is deleted.&nbsp; This requires the applicable permissions
+on the remote file.
+<p>The <tt>resumeProc</tt> parameter can be set to a callback function
+to give you fine-grained control on what to do when the local file already
+exists.&nbsp; See the description of <a href="#FTPGetFiles3"><tt>FTPGetFiles3</tt></a>
+for more information on how to use this.
+<p>The <tt>reserved</tt> parameter must be set to zero.&nbsp; This is reserved
+for future use.
+<p><i>Example:</i> Retrieve a file named &quot;<tt>/pub/README.TXT</tt>" and write it
+as &quot;<tt>/tmp/xx</tt>".
+<pre>&nbsp;&nbsp;&nbsp; err = FTPGetOneFile2(cip, &quot;/pub/README.TXT&quot;, &quot;/tmp/xx&quot;, kTypeBinary, -1, kResumeYes, kAppendNo);</pre>
+If the fetch succeeded, 0 is returned, otherwise a number less than zero
+is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPInitConnectionInfo"></a>FTPInitConnectionInfo</h4>
+
+<ul><tt>int FTPInitConnectionInfo(const FTPLIPtr lip, const FTPCIPtr cip,
+size_t bufSize);</tt>
+<p>Before you can attempt to connect to a host using the FTP protocol,
+you must have first initialized the library using
+<a href="#FTPInitLibrary"><tt>FTPInitLibrary</tt>
+</a>.
+<p>Then, when you want to open a host, you use this function to initialize
+a session structure to the default values. After you have done that, you
+may change whatever non-default values you need.
+<p>Typically you use a global variable to hold the library's session information,
+and then pass a pointer to it for all FTP functions.
+<p>The <tt>bufsize</tt> parameter specifies the size of the data transfer
+I/O buffer to use, which is reserved using <tt>malloc()</tt>. You should
+use <tt>kDefaultFTPBufSize</tt> as the value for <tt>bufsize</tt> in most
+cases.
+<p>Here are some default values that may be of interest:
+<pre>&nbsp;&nbsp;&nbsp; cip-&gt;port = kDefaultFTPPort;
+&nbsp;&nbsp;&nbsp; cip-&gt;maxDials = 3;
+&nbsp;&nbsp;&nbsp; cip-&gt;redialDelay = 20;
+&nbsp;&nbsp;&nbsp; cip-&gt;xferTimeout = 600;
+&nbsp;&nbsp;&nbsp; cip-&gt;connTimeout = 30;
+&nbsp;&nbsp;&nbsp; cip-&gt;ctrlTimeout = 135;
+&nbsp;&nbsp;&nbsp; cip-&gt;dataPortMode = kFallBackToSendPortMode;</pre>
+If the initialization succeeded, 0 is returned, otherwise a number less
+than zero is returned upon failure.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPLibraryInfo li;
+&nbsp;&nbsp;&nbsp; FTPConnectionInfo fi;
+
+&nbsp;&nbsp;&nbsp; if (FTPInitLibrary(&amp;li) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init library failed ... */
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; if (FTPInitConnectionInfo(&amp;li, &amp;fi, kDefaultFTPBufSize) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init session failed ... */
+&nbsp;&nbsp;&nbsp; }</pre>
+
+<pre>&nbsp;&nbsp;&nbsp; strcpy(fi.host, &quot;hostname.here.com&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(fi.user, &quot;username&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(fi.pass, &quot;password&quot;);
+&nbsp;&nbsp;&nbsp; /* ... */</pre>
+</ul>
+
+<h4>
+<a NAME="FTPInitLibrary"></a>FTPInitLibrary</h4>
+
+<ul><tt>int FTPInitLibrary(const FTPLIPtr lip);</tt>
+<p>Before you can attempt to connect to a host using the FTP protocol,
+you must have first initialized the library using this function. Typically,
+you use a global variable to hold the library's internal data structures.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPLibraryInfo li;
+
+&nbsp;&nbsp;&nbsp; if (FTPInitLibrary(&amp;li) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init library failed ... */
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a NAME="FTPIsDir"></a>FTPIsDir</h4>
+
+<ul><tt>int FTPIsDir(const FTPCIPtr cip, const char *const dir);</tt>
+<p>This function returns 1 if the pathname is a valid directory, zero if
+it is a plain file, or a negative error code if an error occurred.&nbsp;
+This function may also return 0 if the item is known to exist but the file
+type could not be determined (so, if the item exists it is assumed to be
+a regular file; however due to the way the test is performed, the item
+in question could not be changed to so it is most likely a regular file,
+and less likely an inaccessible directory).
+<p>This function calls <a href="#FTPFileExists"><tt>FTPFileExists</tt></a>, which
+may be an expensive call.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPConnectionInfo ci;
+
+&nbsp;&nbsp;&nbsp; if (FTPIsDir(&amp;ci, &quot;/pub/linux&quot;) &gt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* directory */
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a NAME="FTPIsRegularFile"></a>FTPIsRegularFile</h4>
+
+<ul><tt>int FTPIsRegularFile(const FTPCIPtr cip, const char *const file);</tt>
+<p>This function returns 1 if the pathname is a file, zero if it is a valid
+directory, or a negative error code if an error occurred.&nbsp; This function
+may also return 0 if the item is known to exist but the file type could
+not be determined (so, if the item exists it is assumed to be a regular
+file; however due to the way the test is performed, the item in question
+could not be changed to so it is most likely a regular file, and less likely
+an inaccessible directory).
+<p>This function calls <a href="#FTPFileExists"><tt>FTPFileExists</tt></a>, which
+may be an expensive call.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPConnectionInfo ci;
+
+&nbsp;&nbsp;&nbsp; if (FTPIsRegularFile(&amp;ci, &quot;/pub/linux/README&quot;) &gt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* file */
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a NAME="FTPList"></a>FTPList</h4>
+
+<ul><tt>int FTPList(const FTPCIPtr cip, const int outfd, const int longMode,
+const char *const lsflag);</tt>
+<p>This is a simple way to get a remote directory listing dumped to the
+screen. The <tt>outfd</tt> parameter specifies which file descriptor to
+write to, so you do not necessarily have to use <tt>stdout</tt> (file descriptor
+1) here.
+<p>The <tt>longMode</tt> parameter determines which method of listing you
+want. The FTP Protocol currently has two methods, one which is a simple
+one file per line style <tt>(longMode == 0)</tt>, and another host-specific
+output method <tt>(longMode == 1)</tt>. Typically for UNIX systems, these
+methods equate to "<tt>/bin/ls -1</tt>" and "<tt>/bin/ls -la</tt>".
+<p>The <tt>lsflag</tt> parameter can be used to give a specific directory
+(or file) to list, and also as a way to specify alternate flags. For example,
+many systems accept UNIX's <tt>/bin/ls</tt> flags, like "<tt>-CF</tt>".
+<p><i>Example 1:</i> Dump a simple listing of the current directory to
+the screen.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPList(cip, 1, 0, NULL);</pre>
+<i>Example 2:</i> Dump a long listing of the directory &quot;<tt>/pub</tt>&quot; to the screen.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPList(cip, 1, 1, &quot;/pub&quot;);</pre>
+<i>Example 3:</i> Simulate "<tt>/bin/ls -CF</tt>" behavior on the current
+remote working directory.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPList(cip, 1, 0, &quot;-CF&quot;);</pre>
+<i>Note:</i> This really isn't too useful for doing programmatical analysis
+with. If you want to do that,
+<a href="#FTPListToMemory"><tt>FTPListToMemory</tt></a>
+is a much better choice.
+<p>If the listing succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPListToMemory"></a>FTPListToMemory</h4>
+
+<ul><tt>int FTPListToMemory(const FTPCIPtr cip, const char *const pattern,
+const FTPLineListPtr lines, const char *const lsflags);</tt>
+<p>This allows you to get a directory listing of a remote directory, and
+have it loaded into a dynamic data structure.
+<p>The <tt>pattern</tt> parameter specifies a directory to list, or a wildcard
+expression of files to list. The output is loaded into the <tt><a href="#LineLists">FTPLineList</a></tt> specified
+by the <tt>lines</tt> parameter. The <tt>lsflags</tt> parameter lets you
+specify additional <tt>/bin/ls</tt> style flags. If you use it, you must
+have a trailing space, like "<tt>-CF</tt> " and if you don't want any flags,
+you must use an empty string, like "".
+<p><i>Example 1:</i> Get a listing of files in the <tt>/pub</tt> directory.
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList fileList;
+
+&nbsp;&nbsp;&nbsp; err = FTPListToMemory(cip, &quot;/pub&quot;, &amp;fileList, &quot;&quot;);</pre>
+<i>Example 2:</i> Get a long listing of files in the current directory,
+sorted by older files first.
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList fileList;
+
+&nbsp;&nbsp;&nbsp; err = FTPListToMemory(cip, &quot;.&quot;, &amp;fileList, &quot;-lrt &quot;);</pre>
+<i>Note:</i> If all you want is a list of files, it may be easier to just
+use
+<a href="#FTPRemoteGlob"><tt>FTPRemoteGlob</tt></a>. That function calls <tt>FTPListToMemory</tt>
+for you.
+<p>If the listing succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a name="FTPListToMemory2"></a>FTPListToMemory2</h4>
+
+<ul><tt>int FTPListToMemory2(const FTPCIPtr cip, const char *const pattern, const FTPLineListPtr llines, const char *const lsflags, const int blanklines, int *const tryMLSD);</tt>
+<p>This function is identical to <tt><a href="#FTPListToMemory">FTPListToMemory</a></tt>,
+except it has a few more parameters (which you probably won't need, which is why
+you'll probably not use this function).&nbsp; In fact, <tt>FTPListToMemory </tt>is
+actually <tt>FTPListToMemory(cip, pattern, llines, lsflags, 1, NULL)</tt>.
+<p>The <tt>blanklines</tt> parameter can be set to 0 if you want blank lines
+removed from the list output.
+<p>The <tt>tryMLSD</tt> parameter can be used if you want to try the new &quot;<tt>MLSD</tt>&quot;
+FTP command primitive which newer FTP servers support to enable machine-readable
+(i.e. parseable!) directory listings.&nbsp; To use it, set an integer local
+variable to 1 and pass a pointer to it to this function.&nbsp; If the listing
+was successful and <tt>MLSD</tt> was used, your variable will remain 1.&nbsp; If
+<tt>MLSD</tt> failed or could not be used, your variable will be set to 0.&nbsp;
+If you pass NULL or a pointer to a variable containing 0 for the <tt>tryMLSD</tt>
+parameter, then <tt>MLSD</tt> is not attempted.</ul>
+
+<h4>
+<a NAME="FTPLocalGlob"></a>FTPLocalGlob</h4>
+
+<ul><tt>int FTPLocalGlob(FTPCIPtr cip, FTPLineListPtr fileList, const char
+*pattern, int doGlob);</tt>
+<p>This gives you a way to do a shell-expansion of a wildcard pattern on
+the local host. You can use this to gather a list of files, and then do
+something with the list.
+<p>The <tt>pattern</tt> parameter specifies a wildcard expression. The
+<tt>pattern</tt>
+may also contain the tilde-notation popularized by <tt>/bin/csh</tt>. These
+are expanded by the library, and then <tt>/bin/sh</tt> is used in conjunction
+with <tt>/bin/ls</tt> to produce the list of files for you.
+<p>The <tt>doGlob</tt> parameter may seem redundant, but if you set it
+to
+<tt>kGlobNo</tt> you can have the function only do the tilde expansion.
+<p><i>Example:</i> Get a list of all C source files in the current directory.
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList fileList;
+
+&nbsp;&nbsp;&nbsp; err = FTPLocalGlob(cip, &amp;fileList, &quot;*.c&quot;, &amp;fileList, kGlobYes);</pre>
+If the globbing succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPLoginHost"></a>FTPLoginHost</h4>
+
+<ul><tt>int FTPLoginHost(const FTPCIPtr cip);</tt>
+<p>This uses the values for the <tt>user</tt>, <tt>pass</tt>, and <tt>acct</tt>
+fields from the <tt>FTPConnectionInfo</tt> structure to sign on to the
+remote system, and reads the connect message from the server.
+<p>You should not need to use this function, since
+<a href="#FTPOpenHost"><tt>FTPOpenHost</tt></a>
+does this for you automatically.
+<p>If the login was successful, 0 is returned, otherwise a number less
+than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPMkdir"></a>FTPMkdir</h4>
+
+<ul><tt>int FTPMkdir(const FTPCIPtr cip, const char *const newDir, const
+int recurse);</tt>
+<p>This creates a new directory on the remote host. The <tt>recurse</tt>
+parameter specifies whether it should attempt to create all directories
+in the path and not just the last node (this emulates "<tt>/bin/mkdir -p</tt>").
+The <tt>recurse</tt> parameter must be set to either <tt>kRecursiveYes</tt>
+or <tt>kRecursiveNo</tt>.
+<p>If the directory creation succeeded, 0 is returned, otherwise a number
+less than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPOpenHost"></a>FTPOpenHost</h4>
+
+<ul><tt>int FTPOpenHost(const FTPCIPtr cip);</tt>
+<p>This is routine is used to establish the connection to the remote host.
+Before you can use it, you must set some of the fields in your <tt>FTPConnectionInfo</tt>
+structure.
+<p>The <tt>host</tt> field must be set to the name of the remote host.
+You may also use an IP address in place of a hostname.
+<p>The <tt>user</tt> and <tt>pass</tt> fields must be set if you are not
+logging in anonymously. If you leave them unset, an anonymous login is
+attempted, with the password being a guess at a the email address for the
+user running your program. There is also an <tt>acct</tt> field which you
+may set if for some reason the remote server requires an account designation
+in addition to a user and password.
+<p>The <tt>port</tt> parameter may be set to a non-standard port if you
+wish to connect to an FTP server running on a port other than the default
+port number, 21.
+<p>The library has a built-in facility to "redial" a host if it could not
+login in the first time. You may set the <tt>maxDials</tt> field to a number
+greater than one to turn that on. If you do that, you may want to tune
+the time delay between dials by setting the <tt>redialDelay</tt> field.
+<p><i>Example 1:</i> Establish an anonymous connection to <tt>ftp.cdrom.com</tt>.
+<pre>&nbsp;&nbsp;&nbsp; FTPLibraryInfo li;
+&nbsp;&nbsp;&nbsp; FTPConnectionInfo fi;
+
+&nbsp;&nbsp;&nbsp; if (FTPInitLibrary(&amp;li) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init library failed ... */
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; if (FTPInitConnectionInfo(&amp;li, &amp;fi, kDefaultFTPBufSize) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init session failed ... */
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; strcpy(fi.host, &quot;ftp.cdrom.com&quot;);
+&nbsp;&nbsp;&nbsp; if (FTPOpenHost(&amp;fi) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... could not open a connection there ... */
+&nbsp;&nbsp;&nbsp; }</pre>
+<i>Example 2:</i> Establish an non-anonymous connection to <tt>ftp.cs.unl.edu</tt>.
+<pre>&nbsp;&nbsp;&nbsp; FTPLibraryInfo li;
+&nbsp;&nbsp;&nbsp; FTPConnectionInfo fi;
+
+&nbsp;&nbsp;&nbsp; if (FTPInitLibrary(&amp;li) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init library failed ... */
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; if (FTPInitConnectionInfo(&amp;li, &amp;fi, kDefaultFTPBufSize) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... init session failed ... */
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; strcpy(fi.host, &quot;ftp.cs.unl.edu&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(fi.user, &quot;gleason&quot;);
+&nbsp;&nbsp;&nbsp; strcpy(fi.pass, &quot;mypassword&quot;);
+&nbsp;&nbsp;&nbsp; fi.maxDials = 2;
+&nbsp;&nbsp;&nbsp; fi.redialDelay = 120;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Wait two minutes between. */
+
+&nbsp;&nbsp;&nbsp; if (FTPOpenHost(&amp;fi) != kNoErr) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ... could not open a connection there ... */
+&nbsp;&nbsp;&nbsp; }</pre>
+If the connection was established and the login succeeded, 0 is returned,
+otherwise a number less than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPOpenHostNoLogin"></a>FTPOpenHostNoLogin</h4>
+
+<ul><tt>int FTPOpenHostNoLogin(const FTPCIPtr cip);</tt>
+<p>This is identical to
+<a href="#FTPOpenHost"><tt>FTPOpenHost</tt></a>, except
+that
+<a href="#FTPLoginHost"><tt>FTPLoginHost</tt></a> is not performed.
+<p>If the connection was established, 0 is returned, otherwise a number
+less than zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPPerror"></a>FTPPerror</h4>
+
+<ul><tt>void FTPPerror(const FTPCIPtr cip, const int err, const int eerr,
+const char *const s1, const char *const s2);</tt>
+  <p>This is roughly the library's equivalent to the <tt>perror()</tt> C
+library function. It returns a textual error message from a library error
+number (which will be negative numbers).&nbsp; Most non-console applications
+  won't have a <tt>stderr</tt> stream to print to, so instead of this function
+  you would use <tt><a href="#FTPStrError2">FTPStrError2</a></tt>.
+<p>It is often useful to print an error message when an error occurs, like:
+<pre>&nbsp;&nbsp;&nbsp; if (FTPChdir(cip, &quot;/pub&quot;) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* print an error */
+&nbsp;&nbsp;&nbsp; }</pre>
+However, many of the errors aren't very helpful, because the error code
+is meant be propagated up through a calling chain. So for this particular
+example, you'd often see get the error code
+<tt>kErrCWDFailed</tt> (&quot;<tt>remote chdir failed</tt>&quot;) as the reason. For this reason, when a non-library related
+error occurs, it is often best to inspect the textual response <i> from the
+  server</i>, so the error from the server is printed instead of the generic
+library error.&nbsp; The server message would be the one you would see if you
+  were logging to the <tt>debugLog</tt>, such as &quot;<tt>550 Permission Denied</tt>&quot;.
+<p>To handle this, you can call the <tt>FTPPerror</tt> function with an expected
+error code, so when that particular error occurs the server's error string
+is printed.
+<p>The <tt>s1</tt> and <tt>s2</tt> parameters are words to print along
+with the error. One or both may be NULL if you only need to print one or
+no extra strings.
+<pre>&nbsp;&nbsp;&nbsp; if (FTPChdir(cip, dirname) &lt; 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTPPerror(cip, cip-&gt;errNo, kErrCWDFailed, &quot;cd&quot;, dirname);</pre>
+</ul>
+
+<h4>
+<a NAME="FTPPutFiles"></a>FTPPutFiles,&nbsp;<a NAME="FTPPutFiles2"></a>FTPPutFiles2</h4>
+
+<ul><tt>int FTPPutFiles(const FTPCIPtr cip, const char *const pattern,
+const char *const dstdir, const int recurse, const int doGlob);</tt>
+<p><tt>int FTPPutFiles2(const FTPCIPtr cip, const char *const pattern,
+const char *const dstdir, const int recurse, const int doGlob, const int
+xtype, const int appendflag, const char *const tmppfx, const char *const
+tmpsfx);</tt>
+<p>These functions have been superceded by <a href="#FTPPutFiles3"><tt>FTPPutFiles3</tt></a>
+and are only provided for backward-compatibility with code based off of
+older versions of the library.</ul>
+
+<h4>
+<a NAME="FTPPutFiles3"></a>FTPPutFiles3</h4>
+
+<ul><tt>int FTPPutFiles3(const FTPCIPtr cip, const char *const pattern,
+const char *const dstdir, const int recurse, const int doGlob, const int
+xtype, const int appendflag, const char *const tmppfx, const char *const
+tmpsfx, const int resumeflag, const int deleteflag, const FTPConfirmResumeUploadProc
+resumeProc, int reserved);</tt>
+<p>Uploads (writes) files to the remote system.
+<p>The <tt>pattern</tt> parameter is the remote pathname to upload.&nbsp;
+When coupled with globbing, the pattern can denote a regular expression
+so that multiple files can be uploaded with a single wildcard expression.
+<p>The <tt>dstdir</tt> parameter is remote directory where the files are
+to be written. If you want them placed in the current remote directory,
+just use <tt>"."</tt> as the <tt>dstdir</tt>. The files sent are named
+to be the same as they were on the local system.
+<p>The <tt>recurse</tt> parameter must be set to either <tt>kRecursiveYes</tt>
+or <tt>kRecursiveNo</tt>. When set the library attempts to upload the entire
+directory structure if
+<tt>pattern</tt> is a directory.&nbsp; Recursion
+for this function should be portable. It does not require any special treatment
+from the remote server (unlike the <a href="#FTPGetFiles3"><tt>FTPGetFiles3</tt></a>
+function).
+<p>The <tt>doGlob</tt> parameter must be set to either <tt>kGlobYes</tt>
+or
+<tt>kGlobNo</tt>. When set, the <tt>pattern</tt> is considered a shell
+wildcard-style regular expression, and
+<a href="#FTPLocalGlob"><tt>FTPLocalGlob</tt></a>
+is used if needed to build a list of files to retrieve.
+<p>The <tt>xtype</tt> parameter must be set to either
+<tt>kTypeAscii</tt>
+or
+<tt>kTypeBinary</tt>.&nbsp; Unless the file is known to be stored in
+the local host's native text format, where ASCII text translation to the
+remote host's text format would be useful, you should use binary transfer
+type.
+<p>The <tt>appendflag</tt> parameter must be set to either <tt>kAppendYes</tt>
+or <tt>kAppendNo</tt>. When set, the entire local file is uploaded, and
+the remote file is appended to, if present. Generally that is not very
+useful.
+<p>The <tt>tmppfx</tt> parameter must be set to the prefix of the temporary
+file to use, or NULL if no prefix should be used. The <tt>tmpsfx</tt> parameter
+must be set to the suffix of the temporary file to use, or NULL if no suffix
+should be used. These two parameters are used to create a temporary filename
+based on the real file name you want. If either of these is set, then the
+library uploads to a temporary file, and when the upload finishes, renames
+the temporary file to the real name. For example, if the file to upload
+is to be named &quot;<tt>/tmp/aaa/bbb.txt</tt>" and the <tt>tmpsfx</tt> is
+&quot;<tt>.TMP</tt>", then &quot;<tt>/tmp/aaa/bbb.txt.TMP</tt>" is uploaded, and it it worked, renamed to
+&quot;<tt>/tmp/aaa/bbb.txt</tt>".
+<p>The <tt>resumeflag</tt> parameter must be set to either <tt>kResumeYes</tt>
+or <tt>kResumeNo</tt>. When set, the library will attempt to resume the
+upload. This is done if the remote file already exists and is smaller than
+the local file. In addition, the library tries to use modification times
+when possible to determine if this should be done.
+<p>The <tt>deleteflag</tt>&nbsp; parameter must be set to either <tt>kDeleteYes</tt>
+or <tt>kDeleteNo</tt>. When set, after the file is uploaded successfully
+the local file is deleted.
+<p>The <tt>resumeProc</tt> parameter can be set to a callback function
+to give you fine-grained control on what to do when the remote file already
+exists.&nbsp; Your function can determine whether to resume the upload,
+overwrite and upload the entire file, append to the remote file, or skip
+the file transfer.&nbsp; This is useful for interactive programs where
+you want the user to choose which action to take.&nbsp; This parameter
+must be set to <tt>kNoFTPConfirmResumeUploadProc</tt> to indicate you do not
+want a callback function, which is most of the time.&nbsp; Otherwise your
+callback function should be a valid <tt>FTPConfirmResumeUploadProc</tt>, which
+is declared as follows:
+<br>&nbsp;
+<ul>
+<pre>typedef int (*FTPConfirmResumeUploadProc)(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char *volatile localpath,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int localsize,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile time_t localmtime,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char *volatile *remotepath,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int remotesize,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile time_t remotetime,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; volatile longest_int *volatile startPoint
+);</pre>
+</ul>
+<p>Your callback function should examine the parameters passed into it, and
+return one of the following result codes:</p>
+
+<ul type="disc">
+<li>
+<tt>kConfirmResumeProcSaidSkip</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidResume</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidOverwrite</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidAppend</tt></li>
+
+<li>
+<tt>kConfirmResumeProcSaidBestGuess</tt></li>
+</ul>
+
+<p>Your callback function should also set the <tt>startPoint</tt> to
+the offset into the local file where to resume the upload at.&nbsp; You
+also have the option of changing the <tt>remotepath</tt> parameter, which
+could be useful if your function decides it can save to a new name.
+<p>The <tt>reserved</tt> parameter must be set to zero.&nbsp; This is reserved
+for future use.
+<p>If all transfers succeeded, <tt>FTPPutFiles3</tt> returns 0 (<tt>kNoErr</tt>),
+otherwise a number less than zero is returned if one or more transfers
+failed. All files matched are attempted to be transferred, so if one fails,
+that does not cause the remaining list to be aborted.
+<p><i>Example 1:</i> Send all files in the current directory whose names
+end in &quot;<tt>.zip</tt>&quot; and write them to the &quot;<tt>/tmp</tt>" remote directory.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutFiles3(cip, &quot;*.zip&quot;, &quot;/tmp&quot;, kRecursiveNo, kGlobYes, kTypeBinary,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kAppendNo, NULL, NULL, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+<i>Example 2:</i> Send one file whose name is &quot;<tt>*README*</tt>&quot;, but not files
+named "<tt>README</tt>" nor &quot;<tt>*README-NOW*</tt>&quot;, and write it to the current remote directory.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutFiles3(cip, &quot;*README*&quot;, &quot;.&quot;, kRecursiveNo, kGlobNo, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kAppendNo, NULL, NULL, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+<i>Example 3:</i> Send the entire contents of the local directory &quot;<tt>/usr/local/bin</tt>&quot;,
+creating a &quot;<tt>/pub/bin</tt>&quot; directory tree on the remote server:
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutFiles3(cip, &quot;/usr/local/bin&quot;, &quot;/pub&quot;, kRecursiveYes, kGlobNo, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kAppendNo, NULL, NULL, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+<i>Example 4:</i> Send all files in the current directory whose names end
+in &quot;<tt>.zip</tt>&quot; and write them to the &quot;<tt>/tmp</tt>" remote directory, using
+  &quot;<tt>AA</tt>&quot; as
+the prefix to temporary files:
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutFiles3(cip, &quot;*.zip&quot;, &quot;/tmp&quot;, kRecursiveNo, kGlobYes, kTypeBinary,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kAppendNo, &quot;AA&quot;, NULL, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+</ul>
+
+<h4>
+<a NAME="FTPPutOneFile"></a>FTPPutOneFile,&nbsp;<a NAME="FTPPutOneFile2"></a>FTPPutOneFile2</h4>
+
+<ul><tt>int FTPPutOneFile(const FTPCIPtr cip, const char *const file, const
+char *const dstfile);</tt>
+<p><tt>int FTPPutOneFile2(const FTPCIPtr cip, const char *const file, const
+char *const dstfile, const int xtype, const int fdtouse, const int appendflag,
+const char *const tmppfx, const char *const tmpsfx);</tt>
+<p>These functions have been superceded by <a href="#FTPPutOneFile3"><tt>FTPPutOneFile3</tt></a>
+and are only provided for backward-compatibility with code based off of
+older versions of the library.</ul>
+
+<h4>
+<a NAME="FTPPutOneFile3"></a>FTPPutOneFile3</h4>
+
+<ul><tt>int FTPPutOneFile3(const FTPCIPtr cip, const char *const file,
+const char *const dstfile, const int xtype, const int fdtouse, const int
+appendflag, const char *const tmppfx, const char *const tmpsfx, const int
+resumeflag, const int deleteflag, const FTPConfirmResumeUploadProc resumeProc,
+int reserved);</tt>
+<p>This is provides a way to upload a single local file and write it under
+a different name (if needed) on the remote server.
+<p>The <tt>file</tt> parameter specifies the remote file name to upload,
+and the <tt>dstfile</tt> parameter specifies the remote file name to save
+it as.
+<p>The <tt>xtype</tt> parameter must be set to either
+<tt>kTypeAscii</tt>
+or
+<tt>kTypeBinary</tt>.&nbsp; Unless the file is known to be stored in
+the local host's native text format, where ASCII text translation to the
+remote host's text format would be useful, you should use binary transfer
+type.
+<p>The <tt>fdtouse</tt> parameter must be either an opened file descriptor
+for reading, or less than zero if the function should open the file as
+needed.&nbsp; Most of the time you will use <tt>(-1)</tt> for this parameter
+and let the library open the local file for you.
+<p>The <tt>appendflag</tt> parameter must be set to either <tt>kAppendYes</tt>
+or <tt>kAppendNo</tt>. When set, the entire local file is uploaded, and
+the remote file is appended to, if present. Generally that is not very
+useful.
+<p>The <tt>tmppfx</tt> parameter must be set to the prefix of the temporary
+file to use, or NULL if no prefix should be used. The <tt>tmpsfx</tt> parameter
+must be set to the suffix of the temporary file to use, or NULL if no suffix
+should be used. These two parameters are used to create a temporary filename
+based on the real file name you want. If either of these is set, then the
+library uploads to a temporary file, and when the upload finishes, renames
+the temporary file to the real name. For example, if the file to upload
+is to be named &quot;<tt>/tmp/aaa/bbb.txt</tt>" and the <tt>tmpsfx</tt> is
+&quot;<tt>.TMP</tt>", then &quot;<tt>/tmp/aaa/bbb.txt.TMP</tt>" is uploaded, and it it worked, renamed to
+&quot;<tt>/tmp/aaa/bbb.txt</tt>".
+<p>The <tt>resumeflag</tt> parameter must be set to either <tt>kResumeYes</tt>
+or <tt>kResumeNo</tt>. When set, the library will attempt to resume the
+upload. This is done if the remote file already exists and is smaller than
+the local file. In addition, the library tries to use modification times
+when possible to determine if this should be done.
+<p>The <tt>deleteflag</tt>&nbsp; parameter must be set to either <tt>kDeleteYes</tt>
+or <tt>kDeleteNo</tt>. When set, after the file is uploaded successfully
+the local file is deleted.
+<p>The <tt>resumeProc</tt> parameter can be set to a callback function
+to give you fine-grained control on what to do when the local file already
+exists.&nbsp; See the description of <a href="#FTPPutFiles3"><tt>FTPPutFiles3</tt></a>
+for more information on how to use this.
+<p>The <tt>reserved</tt> parameter must be set to zero.&nbsp; This is reserved
+for future use.
+<p><i>Example 1:</i> Send a file named &quot;<tt>/tmp/xx</tt>" and write it as
+&quot;<tt>/pub/README</tt>".
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutOneFile2(cip, &quot;/tmp/xx&quot;, &quot;/pub/README&quot;, kTypeAscii, -1, kAppendNo,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NULL, NULL, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+<i>Example 2:</i> Send a file named &quot;<tt>/tmp/xx</tt>" and write it temporarily
+as "<tt>/pub/README~</tt>", and when finished, name it &quot;<tt>/pub/README</tt>".
+<pre>&nbsp;&nbsp;&nbsp; err = FTPPutOneFile2(cip, &quot;/tmp/xx&quot;, &quot;/pub/README&quot;, kTypeAscii, -1, kAppendNo,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NULL, &quot;~&quot;, kResumeNo, kDeleteNo, kNoFTPConfirmResumeUploadProc, 0);</pre>
+If the send succeeded, 0 is returned, otherwise a number less than zero
+is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPRemoteGlob"></a>FTPRemoteGlob</h4>
+
+<ul><tt>int FTPRemoteGlob(FTPCIPtr cip, FTPLineListPtr fileList, const char
+*pattern, int doGlob);</tt>
+<p>This gives you a way to do a shell-expansion of a wildcard pattern on
+the remote host. You can use this to gather a list of files, and then do
+something with the list.
+<p>The <tt>pattern</tt> parameter specifies a wildcard expression. The
+<tt>pattern</tt>
+is interpreted in a host-specific manner, but most hosts obey <tt>/bin/csh</tt>
+or <tt>/bin/sh</tt> notation.
+<p>The <tt>doGlob</tt> parameter is not used, so just set it to
+<tt>kGlobYes</tt>.
+<p><i>Example:</i> Get a list of all C source files in the current remote
+directory.
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList fileList;
+
+&nbsp;&nbsp;&nbsp; err = FTPRemoteGlob(cip, &amp;fileList, &quot;*.c&quot;, &amp;fileList, kGlobYes);</pre>
+If the globbing succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPRename"></a>FTPRename</h4>
+
+<ul><tt>int FTPRename(const FTPCIPtr cip, const char *const oldname, const
+char *const newname);</tt>
+<p>Lets you rename a remote file or directory.
+<p>If the renaming succeeded, 0 is returned, otherwise a number less than
+zero is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPRmdir"></a>FTPRmdir</h4>
+
+<ul><tt>int FTPRmdir(const FTPCIPtr cip, const char *const pattern, const
+int recurse, const int doGlob);</tt>
+<p>Removes remote directories on the remote system, like <tt>/bin/rmdir</tt>
+does locally. Trying to remove a non-empty directory may or may not work,
+depending on the remote server. It won't on most UNIX servers.
+<p>The <tt>doGlob</tt> parameter must be set to either <tt>kGlobYes</tt>
+or
+<tt>kGlobNo</tt>.&nbsp; When set, the <tt>pattern</tt> is considered
+a shell-wildcard-style regular expression.
+<p>The <tt>recurse</tt> parameter must be set to either <tt>kRecursiveYes</tt>
+or <tt>kRecursiveNo</tt>.&nbsp; When set, the library attempts to remove
+all files and subdirectories also (i.e. like <tt>/bin/rm -rf</tt> on UNIX).
+<p><i>Example 1:</i> Delete all subdirectories in the current remote directory
+whose names contain "<tt>tmp</tt>".
+<pre>&nbsp;&nbsp;&nbsp; err = FTPRmdir(cip, &quot;*tmp*&quot;, kRecursiveNo, kGlobYes);</pre>
+<i>Example 2:</i> Delete one remote directory whose name is "/tmp".
+<pre>&nbsp;&nbsp;&nbsp; err = FTPDelete(cip, &quot;/tmp&quot;, kRecursiveNo, kGlobNo);</pre>
+If all deletions succeeded, 0 is returned, otherwise a number less than
+zero is returned if one or more deletions failed. All files matched are
+attempted to be deleted, so if one deletion fails, that does not cause
+the remaining list to be aborted.</ul>
+
+<h4>
+<a NAME="FTPShutdownHost"></a>FTPShutdownHost</h4>
+
+<ul><tt>void FTPShutdownHost(const FTPCIPtr cip);</tt>
+<p>Forcibly closes the connection to the current host, and disposes the
+library's data structures associated with it.
+<p>Unlike
+<a href="#FTPCloseHost"><tt>FTPCloseHost</tt></a>, This function will
+not block, but you should use <tt>FTPCloseHost</tt> whenever possible because it
+does a close that is more polite to the remote host.</ul>
+
+<h4>
+<a NAME="FTPStrError"></a>FTPStrError</h4>
+
+<ul><tt>const char *FTPStrError(int errNo);</tt>
+<p>This is the library's equivalent to the <tt>strerror()</tt> C library
+function. It returns a textual error message from a library error number
+(which will be negative numbers).
+<p>This function is often useful to dump an error message when an error
+occurs, like:
+<pre>&nbsp;&nbsp;&nbsp; if (FTPChdir(cip, &quot;/pub&quot;) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Could not cd to /pub: %s.\n&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTPStrError(cip-&gt;errNo));
+&nbsp;&nbsp;&nbsp; }</pre>
+However, many of the library's error messages aren't very helpful, because the error code
+is meant be propagated up through a calling chain. So for this particular
+example, you'd often see &quot;<tt>remote chdir failed</tt>&quot; as the reason. For
+this reason, it is often best to inspect the response <i> from the server</i>,
+  which will probably have something more useful, such as &quot;<tt>Permission
+  denied</tt>&quot;.
+  <p>Here's one way you could do this using <tt>FTPStrError</tt> (but in
+  practice, see below for <tt><a href="#FTPStrError2">FTPStrError2</a></tt>
+  which does this better):</p>
+<pre>&nbsp;&nbsp;&nbsp; if (FTPChdir(cip, &quot;/pub&quot;) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cip-&gt;errNo == kErrCWDFailed) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Could not cd to /pub: %s.\n&quot;, cip-&gt;lastFTPCmdResultStr);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Could not cd to /pub: %s.\n&quot;, FTPStrError(cip-&gt;errNo));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a name="FTPStrError2"></a>FTPStrError2</h4>
+
+<ul><tt>char *FTPStrError2(const FTPCIPtr cip, int err, char *const dst, const size_t dstsize, int
+  expectedErr);</tt><p>This function is the library's rough equivalent to <tt>strncpy(dst,
+  strerror(errno), dstsize)</tt>, except <tt><a href="#FTPStrError">FTPStrError</a></tt>
+  is used to get the library error message and you pass a library <tt>errNo</tt>
+  rather than <tt>errno</tt>.
+<p>This function is often useful to handle errors that occur with library
+functions, such as:
+<pre>&nbsp;&nbsp;&nbsp; if (FTPChdir(cip, &quot;/pub&quot;) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Inspect cip-&gt;errNo and log the error ... */
+&nbsp;&nbsp;&nbsp; }</pre>
+However, many of the library's error messages aren't very helpful, because the error code
+is meant be propagated up through a calling chain. So for this particular
+example, you'd often see the error code
+<tt>kErrCWDFailed</tt> (&quot;<tt>remote chdir failed</tt>&quot;) which isn't
+  very helpful.&nbsp; For
+this reason, it is often best to inspect the response <i> from the server</i>,
+  if the error code equals the generic error code for the function, then use the
+  server message which will probably have something more useful, such as &quot;<tt>Permission
+  denied</tt>&quot;.
+  <p>Here's our example again, this time using <tt>FTPStrError2</tt>:</p>
+<pre>&nbsp;&nbsp;&nbsp; char errStr[256];
+
+    if (FTPChdir(cip, &quot;/pub&quot;) &lt; 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(stderr, &quot;Could not cd to /pub: %s.\n&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FTPStrError2(cip, cip-&gt;errNo, errStr, sizeof(errStr), kErrCWDFailed));
+&nbsp;&nbsp;&nbsp; }</pre>
+</ul>
+
+<h4>
+<a NAME="FTPSymlink"></a>FTPSymlink</h4>
+
+<ul><tt>int FTPSymlink(const FTPCIPtr cip, const char *const linkpathfrom,
+const char *const linkpathto);</tt>
+<p>A few FTP server types support a special extension which allows creation
+of symbolic links.&nbsp; This function allows you to attempt to take advantage
+of that functionality by creating a symbolic link on the remote host.
+<p>If the link succeeded, 0 is returned, otherwise a negative error code
+is returned.</ul>
+
+<h4>
+<a NAME="FTPUmask"></a>FTPUmask</h4>
+
+<ul><tt>int FTPUmask(const FTPCIPtr cip, const char *const umsk);</tt>
+<p>This attempts to emulate the <tt>umask</tt> command that UNIX shells
+and programs use. This is not in the FTP standard, but many UNIX hosts
+implement this as a site-specific command.
+<p><i>Example:</i> Set the <tt>umask</tt> for future uploads to <tt>022</tt>.
+<pre>&nbsp;&nbsp;&nbsp; err = FTPUmask(cip, &quot;022&quot;);</pre>
+If the <tt>umask</tt> was set, 0 is returned, otherwise a number less than zero
+is returned upon failure.</ul>
+
+<h4>
+<a NAME="FTPUtime"></a>FTPUtime</h4>
+
+<ul><tt>int FTPUtime(const FTPCIPtr cip, const char *const file, time_t
+actime, time_t modtime, time_t crtime);</tt>
+<p>This attempts to set a remote file's timestamps, similar to to the way
+you would use the <tt>utime()</tt> system call on a local file. This is
+not in the FTP standard, but some UNIX hosts implement this as a site-specific
+command.
+<p><i>Example:</i> Set the times for the remote file &quot;<tt>/pub/README</tt>":
+<pre>&nbsp;&nbsp;&nbsp; if (stat(localfile, &amp;st) == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; err = FTPUtime(cip, &quot;/pub/README&quot;, st.st_atime, st.st_mtime, st.st_ctime);</pre>
+If the times were set, 0 is returned, otherwise a number less than zero
+is returned upon failure.</ul>
+
+<hr>
+<center>
+<h3>
+FTPLineList functions</h3></center>
+
+<h4>
+<a NAME="CopyLineList"></a>CopyLineList</h4>
+
+<ul><tt>int CopyLineList(FTPLineListPtr new, FTPLineListPtr orig);</tt>
+<p>This makes a duplicate of a <tt><a href="#LineLists">FTPLineList</a></tt> structure. The dynamically
+allocated sub-structures are duplicated dynamically, so that disposing
+the original <tt>FTPLineList</tt> does not invalidate the copies in the new
+<tt>FTPLineList</tt>.</ul>
+
+<h4>
+<a NAME="DisposeLineListContents"></a>DisposeLineListContents</h4>
+
+<ul><tt>void DisposeLineListContents(FTPLineListPtr list);</tt>
+<p>This frees all dynamic memory allocations associated with
+<tt>list</tt>.
+<p><i>Example:</i>
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList list;
+&nbsp;&nbsp;&nbsp; int e;
+
+&nbsp;&nbsp;&nbsp; InitLineList(&amp;list);
+&nbsp;&nbsp;&nbsp; for (e=1; (strerror(e) != NULL) &amp;&amp; (e &lt;= 200); e++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (AddLine(&amp;list, strerror(e)) == NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;&nbsp;
+
+&nbsp;&nbsp;&nbsp; /* ... do something with the list you made ... */
+
+&nbsp;&nbsp;&nbsp; DisposeLineListContents(&amp;list);</pre>
+</ul>
+
+<h4>
+<a NAME="InitLineList"></a>InitLineList</h4>
+
+<ul><tt>void InitLineList(FTPLineListPtr list);</tt>
+<p>Prepares a <tt>FTPLineList</tt> structure for use. The best way to use
+these is to simply declare a <tt>FTPLineList</tt> local variable and then
+pass a pointer to it. (i.e., you don't need to declare a <tt>FTPLineListPtr</tt>
+and then <tt>malloc</tt> space for it.)</ul>
+
+<h4>
+<a NAME="RemoveLine"></a>RemoveLine</h4>
+
+<ul><tt>FTPLinePtr RemoveLine(FTPLineListPtr list, FTPLinePtr killMe);</tt>
+<p>This unlinks the <tt>FTPLine</tt> structure and then disposes its contents,
+and of course re-links the list together.
+<p><i>Example:</i> Remove the second line of a list.
+<pre>&nbsp;&nbsp;&nbsp; FTPLineList list;
+&nbsp;&nbsp;&nbsp; FTPLinePtr lp;
+
+&nbsp;&nbsp;&nbsp; /* ... create the list ... */
+&nbsp;&nbsp;&nbsp; lp = list.first;
+&nbsp;&nbsp;&nbsp; lp = lp-&gt;next;
+&nbsp;&nbsp;&nbsp; if (lp != NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RemoveLine(lp, &amp;list);</pre>
+</ul>
+
+<h4>
+<a NAME="AddLine"></a>AddLine</h4>
+
+<ul><tt>FTPLinePtr AddLine(FTPLineListPtr list, const char *buf);</tt>
+<p>This makes a dynamically-allocated copy of
+<tt>buf</tt> using <tt>malloc</tt>
+and attaches it to the last node of the <tt>list</tt>.
+<p>This returns a pointer to the allocated <tt>FTPLine</tt>, or NULL if it
+could not be allocated.</ul>
+
+<hr>
+<center>
+<h3>
+<a name="Ftw_Functions">Ftw</a> functions</h3></center>
+
+<h4><a name="FtwInit"></a>FtwInit</h4>
+
+<ul><tt>void FtwInit(FtwInfo *const ftwip);</tt>
+<p>Before calling any of the <tt>Ftw</tt> functions, you must initialize your <tt><a href="#FtwInfo">FtwInfo</a></tt>
+structure.&nbsp; Once it has been initialized, you may re-use the same structure
+as often as you like until you call <tt>FtwDispose</tt> which releases resources
+associated with the structure.</ul>
+
+<h4><a name="FtwDispose"></a>FtwDispose</h4>
+
+<ul><tt>void FtwDispose(FtwInfo *const ftwip);</tt>
+<p><tt>FtwDispose</tt> which releases resources associated with the <tt><a href="#FtwInfo">FtwInfo</a></tt>
+structure.</ul>
+
+<h4><a name="Ftw"></a>Ftw</h4>
+
+<ol>
+  <tt>int Ftw(FtwInfo *const ftwip, const char *const dir, FtwProc proc);</tt><p>This can be used like the C library function
+  <tt>ftw()</tt>, if your C library has one.&nbsp; &quot;Ftw&quot; stands for &quot;file
+tree walk&quot; and like the <tt>ftw()</tt> function, this function provides you an
+opportunity to recurse through an entire directory on the local machine and process each file
+within it.&nbsp; Our implementation has the following features:</p>
+
+<ul type="disc">
+<li><p>It can handle
+  pathnames of any length, so extremely complex directory trees can be processed
+  if there is enough memory and stack space.</p></li>
+
+<li><p>It keeps only one directory open at a time.&nbsp;
+You won't run out of file descriptors!</p></li>
+
+<li><p>It's available (and works the same) on all platforms.</p></li>
+  
+<li><p>You are given a copy of the <tt>stat()</tt> for each file,
+  so your callback doesn't need to do a <tt>stat()</tt> when <tt>ftw()</tt> just did
+  one before calling your function.</p></li>
+</ul> 
+<p>The <tt>dir</tt> parameter specifies the remote directory tree to walk.<p>The
+  <tt>proc</tt>
+  parameter is a callback to a custom function which you provide.&nbsp; This
+  function will be called by <tt>Ftw</tt> for file or directory in the tree.&nbsp; A
+  <tt>proc</tt> is of the <tt>FtwProc</tt> type, which is:
+  <blockquote>
+    <pre>typedef int (*FtwProc)(const FtwInfoPtr ftwip);</pre>
+  </blockquote>
+  <p>When your <tt>FtwProc</tt> is called by <tt>Ftw</tt>  it should <a href="#FtwInfo">inspect
+  the <tt>FtwInfo</tt></a> structure, and return (-1) if directory traversal
+  should stop, or return 0 if the traversal should continue.<p><i>Example:</i>&nbsp;
+  Traverse &quot;<tt>/home/joeuser</tt>&quot; on the local machine, and attempt to
+  remove any &quot;<tt>core</tt>&quot; files found.&nbsp; This is an abridged
+  example, but the library includes a more detailed example, <tt>ncftpftw.c</tt>,
+  in the samples directory (which also can use <tt><a href="#FTPFtw">FTPFtw</a></tt>
+  to do remote <tt>Ftw</tt> traversals on remote FTP servers).
+  <blockquote>
+    <pre>static int
+MyLocalFtwProc(const FtwInfoPtr ftwip)
+{
+	longest_int fSize;
+	time_t fTime;
+
+	if (ftwip-&gt;curType == 'd') {
+		printf(&quot;Directory: %s\n&quot;, ftwip-&gt;curPath);
+	} else if (ftwip-&gt;curType == 'l') {
+		printf(&quot;Symlink: %s\n&quot;, ftwip-&gt;curPath);
+	} else {
+		fSize = ftwip-&gt;curStat.st_size;
+		fTime = ftwip-&gt;curStat.st_mtime;
+		printf(&quot;File: %s (size=%lld, mtime=%u)\n&quot;,
+			ftwip-&gt;curPath, fSize, fTime);
+
+		if (strcmp(ftwip-&gt;curFile, &quot;core&quot;) == 0)
+			(void) unlinkk(ftwip-&gt;curPath);
+	}
+
+	return (0);	/* continue traversal */
+}	/* MyFtwProc */
+
+/* ... */
+{
+	FtwInfo ftwi;
+	int rc;
+
+	FtwInit(&amp;ftwi);
+	if ((rc = Ftw(&amp;ftwi, &quot;/home/joeuser&quot;, MyLocalFtwProc)) != 0) {
+		/* Traversal failed */
+		/* ... */
+	}
+
+	(void) printf(&quot;Stats: rc=%d #dirs=%u #files=%u #links=%u maxdepth=%u\n&quot;,
+		rc, ftwi.numDirs, ftwi.numFiles, ftwi.numLinks, ftwi.maxDepth);
+
+	FtwDispose(&amp;ftwi);
+}</pre>
+  </blockquote>
+</ol>
+<h4><a name="FtwSetBuf"></a>FtwSetBuf</h4>
+
+<ul><tt>void FtwSetBuf(FtwInfo *const ftwip, char *const buf, const size_t
+  bufsize, int autogrow);</tt>
+<p>This can be used if you wish to provide your own buffer rather than allowing <tt>Ftw</tt> to dynamically allocate and grow its own buffer.
+<p>The <tt>buf</tt> parameter should be a pointer to the buffer, or NULL if you
+want <tt>Ftw</tt> to allocate it.
+<p>The <tt>bufsize</tt> parameter should be the size of the buffer, or the
+starting size of the buffer <tt>Ftw</tt> should allocate.<p>The <tt>autogrow</tt>
+  parameter should be set to <tt>kFtwAutoGrow</tt> if Ftw should dynamically
+  extend its own buffer.&nbsp; Set it to <tt>kFtwNoAutoGrowAndFail</tt> if <tt>Ftw</tt>
+  should stop traversing and return an error if the buffer is completely
+  full.&nbsp; Set it to <tt>kFtwNoAutoGrowButContinue</tt> if <tt>Ftw</tt>
+  should continue traversing, and truncate pathnames to the size of the
+  buffer.&nbsp; You can test for truncation by checking if <tt>buf[bufsize - 2]</tt>
+  is not a NUL byte.</ul>
+
+<hr>
+<h2>
+<a NAME="qna"></a>Questions &amp; Answers</h2>
+
+<dl>
+<dl>
+<dt>
+<b>1. How do I get the library to use passive FTP?</b></dt>
+
+<dl>&nbsp;
+<br>The <tt>dataPortMode</tt> field of your <tt>FTPConnectionInfo</tt>
+structure may be set to one of <tt>kSendPortMode</tt>, <tt>kPassiveMode</tt>,
+or <tt>kFallBackToSendPortMode</tt>. If you want to try passive FTP, you
+can use <tt>kPassiveMode</tt>. You can also use <tt>kFallBackToSendPortMode</tt>
+which means the library will try passive FTP first, and if the server does
+not support it, it will then try regular port FTP.</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>2. How can I do non-blocking FTP library calls?</b>
+
+<br>&nbsp;</dt>
+
+<dl>Technically, you can't. The library isn't coded for non-blocking I/O
+and it would be ugly it was. But you can have an operation timeout after
+a number of seconds so you don't hang forever on a slow or unresponsive
+server.
+<p>To do that, the <tt>xferTimeout</tt> field of your <tt>FTPConnectionInfo</tt>
+structure can be set to a positive integer and the library function will return
+an error when the timer expires.</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>3. How do I debug an application using the library?</b>
+
+<br>&nbsp;</dt>
+
+<dl>The easiest is to take advantage of the <tt>debugLog</tt> field in
+your
+<tt>FTPConnectionInfo</tt>  structure (i.e. set it to <tt>stdout</tt>), then look at the log. You should
+be able to see the whole FTP conversation, and what errors the remote server
+reported, if any. You can then repeat that same conversation using an FTP
+client to investigate possible problems with the server you are communicating
+with.</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>4. Does the library support SFTP/SSH/SSL?</b>
+
+<br>&nbsp;</dt>
+
+<dl>No, sorry!</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>5. Is the library thread safe?</b>
+
+<br>&nbsp;</dt>
+
+<dl>Currently our test suite nor any of the sample programs use multi-threading
+  on platforms that support it.&nbsp; Therefore, we can't say we've explicitly
+  tested it in a multi-threading environment.&nbsp; However, some daring
+  customers are using the library in multi-threaded applications with apparent
+  success.
+  <p>The general guidelines would be:</p>
+  <ul>
+  <li><p>Only one thread should own and use a <tt>FTPConnectionInfo</tt> structure
+  (and thus a FTP session).&nbsp; If you can't adhere to that, you absolutely
+  must not allow multiple threads to call library functions using the same <tt>FTPConnectionInfo</tt>
+  structure at the same time.</p></li>
+  <li><p>The library relies upon standard C library functions such as <tt>malloc()</tt>
+  and <tt>snprintf()</tt>, and will try to use reentrant versions of C library
+    functions (such as <tt>strtok_r</tt>) if they are available.&nbsp; When you compile the library, you must compile
+  it with any necessary compiler options that enable multi-threading and
+    reentrancy (for
+    example, <tt>-D_REENTRANT</tt>).&nbsp; For
+  example, thread-safe versions of C library functions such as <tt>malloc()</tt>
+  and <tt>snprintf()</tt> must be used!</p></li>
+  <li><p>Library functions must be allowed to finish.&nbsp; Signal handlers, <tt>longjmp()</tt>ing,
+  or killing threads which are in the middle of library functions may leave the
+  library in an unknown state.</p></li>
+  <li><p>You are responsible for ensuring that only one thread is accessing a
+  particular local file at any given time.</p></li>
+  </ul>
+</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>6. How can I contact the library maintainers?</b></dt>
+
+<dl>&nbsp;
+<br>For technical support,
+<a href="http://www.NcFTP.com/contact/">send us mail</a>.
+</dl>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+&nbsp;</dt>
+
+<dt>
+<b>7. Is SOCKS supported?</b></dt>
+
+<dl>&nbsp;
+<br>Not officially, since we do not use SOCKS, but you can try it.&nbsp; When the library is built, the configure script must be told to look
+for SOCKS, as in <tt>./configure --enable-socks5</tt>.</dl>
+</dl>
+</dl>
+
+</body>
+</html>

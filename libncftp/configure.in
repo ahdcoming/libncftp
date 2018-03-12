@@ -1,0 +1,244 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_INIT(ncftp.h)
+AC_PREREQ(2.13)
+AC_CONFIG_HEADER(config.h ../Strn/config.h ../sio/config.h)
+wi_ARG_DISABLE_CCDV
+wi_ARG_ENABLE_DEBUG
+wi_ARG_DISABLE_PRECOMP
+wi_ARG_WITH_SOCKS5
+wi_ARG_ENABLE_SSP
+wi_ARG_DISABLE_MACOSX_UNIVERSAL
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Environment and compiler settings.
+dnl ---------------------------------------------------------------------------
+dnl
+wi_ENV_VAR_MESSAGES
+wi_OS_VAR
+AC_PROG_CC
+wi_CC_PRECOMP
+wi_REQUEST_NO_Y2K_WARNINGS
+wi_CFLAGS_LFS_OR_LFS64
+wi_CFLAGS_REENTRANT
+wi_MACOSX_UNIVERSAL_CFLAGS
+wi_SFLAG
+AC_OBJEXT
+AC_EXEEXT
+wi_DEFINE_UNAME
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for header files.
+dnl ---------------------------------------------------------------------------
+dnl
+AC_HEADER_STDC
+dnl sio needs strings.h for AIX
+AC_CHECK_HEADERS(arpa/nameser.h gnu/libc-version.h nserve.h resolv.h strings.h sys/sendfile.h sys/time.h sys/utsname.h sys/systeminfo.h termios.h time.h unistd.h utime.h)
+AC_TIME_WITH_SYS_TIME
+wi_STRUCT_CMSGHDR	dnl				# sio
+wi_MSGHDR_CONTROL	dnl				# sio
+wi_MSGHDR_ACCRIGHTS	dnl				# sio
+wi_HEADER_SYS_SELECT_H	dnl				# sio
+
+dnl	# sio
+if test "x$want_unix_domain_sockets" != xno ; then
+	wi_UNIX_DOMAIN_SOCKETS
+else
+	wi_cv_unix_domain_sockets=no
+fi
+SIO_OBJS_U=''
+SIO_SOBJS_U=''
+if test "$wi_cv_unix_domain_sockets" = yes ; then
+	SIO_OBJS_U='$(OBJS_U) '
+	SIO_SOBJS_U='$(SOBJS_U) '
+fi
+AC_SUBST(SIO_OBJS_U)
+AC_SUBST(SIO_SOBJS_U)
+dnl	# sio
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl For the sample programs.
+dnl ---------------------------------------------------------------------------
+dnl
+wi_NET_LIBS
+wi_LIB_SOCKS5
+case "$OS" in
+	solaris8-*)
+dnl
+dnl		Older Solaris 8 versions don't have it, but we try to
+dnl		manually dynamically load the library if available.
+dnl
+		saved_LIBS="$LIBS"
+		AC_CHECK_LIB(sendfile,sendfilev)
+		AC_CHECK_FUNCS(sendfilev sendfilev64)
+		LIBS="$saved_LIBS"
+		AC_CHECK_LIB(dl,dlopen)
+		;;
+changequote(<<, >>)dnl
+	solaris9-*|solaris1[0-9]-*)
+changequote([, ])dnl
+		AC_CHECK_LIB(sendfile,sendfilev)
+		AC_CHECK_FUNCS(sendfilev sendfilev64)
+		;;
+esac
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl ---------------------------------------------------------------------------
+dnl
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_TYPE_OFF_T
+AC_TYPE_MODE_T
+AC_TYPE_PID_T
+AC_TYPE_UID_T
+wi__RES_DEFDNAME
+wi_USE_LONG_LONG
+wi_STRUCT_TIMEVAL_FIELD_TYPES
+wi_VOID_MAIN_RETURN_TYPE
+wi_CHECK_TYPE(negative_control_t, long, [])
+wi_CHECK_TYPE(ssize_t, long, [])
+wi_CHECK_TYPE(sa_family_t, unsigned short, [#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+])
+wi_UNISTD_FUNC_PARAM_TYPES
+wi_FUNC_SELECT_ARGTYPES
+wi_STRUCT_STAT64
+wi_TYPE_SIG_ATOMIC_T
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for library functions.
+dnl ---------------------------------------------------------------------------
+dnl
+wi_FUNC_GETCWD
+AC_CHECK_FUNCS(fstat64 getdomainname gethostname getpass getpassphrase gnu_get_libc_release gnu_get_libc_version inet_ntop llseek lseek64 lstat64 mktime pathconf open64 readlink recvfile recvmsg res_init sendfile sigaction socket stat64 strcasecmp strdup strerror strstr strtoq symlink sysctl sysconf sysinfo tcgetattr uname usleep waitpid)
+AC_CHECK_FUNCS(gethostbyaddr_r gethostbyname_r gethostbyname2_r getlogin_r getpwnam_r _posix_getpwnam_r getpwuid_r _posix_getpwuid_r getservbyname_r getservbyport_r gmtime_r localtime_r readdir_r)
+AC_FUNC_ALLOCA	dnl Only needed for Linux, and for one function in Sio.
+wi_SNPRINTF
+wi_FUNC_SIGSETJMP
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for system characteristics.
+dnl ---------------------------------------------------------------------------
+dnl
+AC_SYS_LONG_FILE_NAMES
+AC_PROG_MAKE_SET
+wi_PROG_TAR
+wi_CREATE_TAR_FILES
+wi_PROG_RANLIB
+wi_PROG_AR
+wi_PROG_CCDV
+wi_SUBST_LONGEST_INT_HEADER([ncftp.h])
+wi_SUBST_STAT_HEADER([ncftp.h])
+wi_REMOVE_UNKNOWN_PREPROCESSING_DIRECTIVES_FROM_FILE([libncftp/ncftp.h])
+wi_RESOLVE_PATH([$srcdir/..], TOPDIR)
+wi_RESOLVE_PATH([$srcdir], MAINDIR)
+wi_RESOLVE_PATH([$MAINDIR/../sio/sio.h], [sio_h])
+wi_DIRNAME(sio_h)
+wi_RESOLVE_PATH([$MAINDIR/../Strn/Strn.h], [strn_h])
+wi_DIRNAME(strn_h)
+dnl CPPFLAGS="$CPPFLAGS -I. -I${MAINDIR} -I${sio_h} -I${strn_h}"
+dnl LDFLAGS="$LDFLAGS -L${MAINDIR} -L${sio_h} -L${strn_h}"
+CPPFLAGS="$CPPFLAGS -I. "'-I$(TOPDIR)/libncftp -I$(TOPDIR)/sio -I$(TOPDIR)/Strn'
+LDFLAGS="$LDFLAGS "'-L$(TOPDIR)/libncftp -L$(TOPDIR)/sio -L$(TOPDIR)/Strn'
+wi_BEAUTIFY_ENVIRONMENT_VARIABLES
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Extra steps to work with precompiled headers.
+dnl ---------------------------------------------------------------------------
+dnl
+LIBNCFTP_PRECOMP="pch.mk.none"
+SIO_PRECOMP="../sio/pch.mk.none"
+if test "${wi_cv_cc_precomp}_${wi_cv_cc_precomp_type}" = "yes_gcc_gch_files" ; then
+	LIBNCFTP_PRECOMP="pch.mk.gcc-gch"
+	SIO_PRECOMP="../sio/pch.mk.gcc-gch"
+elif test "${wi_cv_cc_precomp}_${SYS}" = "yes_macosx" ; then
+	LIBNCFTP_PRECOMP="pch.mk.$SYS"
+	SIO_PRECOMP="../sio/pch.mk.$SYS"
+fi
+AC_SUBST_FILE(LIBNCFTP_PRECOMP)
+AC_SUBST_FILE(SIO_PRECOMP)
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Version lookups for Makefile variables.
+dnl ---------------------------------------------------------------------------
+dnl
+changequote(<<, >>)dnl
+LIBNCFTP_VERSION=`sed -n '/kLibraryVersion/{
+	s/^[^0-9]*//
+	s/\ .*$//
+	p
+	q
+}' ncftp.h`
+
+SIO_VERSION=`sed -n '/kSioVersion/{
+	s/^[^0-9]*//
+	s/\ .*$//
+	p
+	q
+}' ../sio/sio.h`
+
+STRN_VERSION=`sed -n '/gStrnLibVersion\[\]/{
+	s/^[^0-9]*//
+	s/\".*$//
+	p
+	q
+}' ../Strn/Strncpy.c`
+changequote([, ])dnl
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Create Makefiles and config.h files.
+dnl ---------------------------------------------------------------------------
+dnl
+if test -d bin.only ; then
+	binonly="bin.only/Makefile bin.only/samples/Makefile"
+else
+	binonly=""
+fi
+samples=''
+for sample in samples/*/Makefile.in
+do
+	if test -f "$sample" ; then
+		sample=`echo "$sample" | sed 's/\.in$//;'`
+		samples="$samples $sample"
+	fi
+done
+wi_SUMMARIZE_COMPILER_FLAGS
+AC_SUBST(CC)
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(SFLAG)
+AC_SUBST(STRIP)
+AC_SUBST(LIBS)
+AC_SUBST(DEFS)
+AC_SUBST(MAKE)
+AC_SUBST(LIBSET)
+AC_SUBST(TOPDIR)
+AC_SUBST(MAINDIR)
+AC_SUBST(LIBNCFTP_VERSION)
+AC_SUBST(SIO_VERSION)
+AC_SUBST(STRN_VERSION)
+AC_SUBST(SIZEOF_OFF_T)
+AC_SUBST(SIZEOF_ST_SIZE)
+AC_OUTPUT([Makefile ../Strn/Makefile ../sio/Makefile $samples $binonly])

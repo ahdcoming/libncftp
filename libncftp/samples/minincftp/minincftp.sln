@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minincftp", "minincftp.vcproj", "{37316693-9D0A-41F7-B304-9719FEA3881E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37316693-9D0A-41F7-B304-9719FEA3881E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37316693-9D0A-41F7-B304-9719FEA3881E}.Debug|Win32.Build.0 = Debug|Win32
+		{37316693-9D0A-41F7-B304-9719FEA3881E}.Release|Win32.ActiveCfg = Release|Win32
+		{37316693-9D0A-41F7-B304-9719FEA3881E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

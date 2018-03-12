@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ncftpsyncput", "ncftpsyncput.vcproj", "{FF9FF9B2-BACE-430D-B073-E338A0BC3287}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF9FF9B2-BACE-430D-B073-E338A0BC3287}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF9FF9B2-BACE-430D-B073-E338A0BC3287}.Debug|Win32.Build.0 = Debug|Win32
+		{FF9FF9B2-BACE-430D-B073-E338A0BC3287}.Release|Win32.ActiveCfg = Release|Win32
+		{FF9FF9B2-BACE-430D-B073-E338A0BC3287}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

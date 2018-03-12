@@ -1,0 +1,41 @@
+#-----------------------------------------------------------------------------
+#
+# Makefile for the platform @OS@, on the host @host@.
+#
+#-----------------------------------------------------------------------------
+
+CC=@CC@
+DEFS=@DEFS@@NDEFS@
+CFLAGS=@CFLAGS@
+# CC=gcc
+# CFLAGS=-O2 -W -Wall -Wimplicit -Wstrict-prototypes -Wmissing-prototypes
+prefix=@prefix@
+TOPDIR=@TOPDIR@
+CPPFLAGS=@CPPFLAGS@
+
+SYSLIBS=@LIBS@
+LIBS=-lncftp -lsio -lStrn $(SYSLIBS)
+STRIPFLAG=@SFLAG@
+LDFLAGS=@LDFLAGS@
+
+DELETE=/bin/rm -rf
+LIST=/bin/ls -l
+EXEEXT=@EXEEXT@
+OBJEXT=@OBJEXT@
+
+PROGS=ncftpftw$(EXEEXT)
+
+all: $(PROGS)
+
+ncftpftw$(EXEEXT): ncftpftw.c $(TOPDIR)/libncftp/ncftp.h $(TOPDIR)/libncftp/ncftp_errno.h $(TOPDIR)/libncftp/libncftp.a
+	@CCDV@$(CC) $(CFLAGS) $(DEFS) $(CPPFLAGS) ncftpftw.c -o ncftpftw$(EXEEXT) $(LDFLAGS) $(LIBS) $(STRIPFLAG)
+	-@$(LIST) $(PROGS)
+
+$(TOPDIR)/libncftp/libncftp.a:
+	[ -f $(TOPDIR)/libncftp/libncftp.a ]
+
+clean:
+	-$(DELETE) $(PROGS)
+	-$(DELETE) *.$(OBJEXT)
+	-$(DELETE) *.dSYM
+	-$(DELETE) core csetc.pch SunWS_cache

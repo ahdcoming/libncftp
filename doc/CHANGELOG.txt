@@ -1,0 +1,471 @@
+LibNcFTP Change Log:
+===================
+
+3.2.6, 2016-11-12
+
+   + If a recursive download operation is also requested with delete mode,
+     attempt to remove empty directories after all files have completed
+     successfully.
+
+   + To avoid problems on servers that penalize clients for trying to CWD
+     with a non-directory, FTPRmdirRecursive now ensures sub-pathnames
+     are directories before trying FTPChdir.
+
+   + No longer trying to utime() after every single block on downloads,
+     which could cause noticable performance degradation when the local
+     filesystem was not local.
+
+   + Changed behavior of resuming downloads where the timestamp wasn't
+     preserved (because of the utime change, above). The new behavior is
+     to resume the download when the local copy has a recent timestamp
+     (less than a week).
+
+   + You can now disable use of MFMT like you could similarly disable
+     SITE UTIME.
+
+   + You can now explicitly set hasAPPE to 0 to prevent it being used
+     when hasREST is also 0.
+
+   + The library now caches the most recent value of PWD and uses it
+     to prevent redundant PWD commands.
+
+   + Now able to use sendfile() for uploads, on Linux/FreeBSD/Mac.
+     Progress reports work too, with a small performance penalty.
+
+
+3.2.5, 2011-01-17
+
+   + If a server's MLSx output returns both the "UNIX.mode" and the "perm"
+     parameters, UNIX.mode will take precedence (Thanks, Jay Kulpinski).
+
+
+3.2.4, 2010-04-07
+
+   + Compatibility fixes for FreeBSD 8.
+
+   + Support for local validation of DNSSEC when combined with libraries
+     available from the DNSSEC Tools project (Thanks, Robert Story).
+
+   + Directory listings now assume a line with no year implies that the
+     current year should be used if the date is no more than 2 days into
+     the future.  Previously, for UNIX ls compatibility, up to 6 months into
+     the future was allowed.
+
+   + Compatibility fixes for MinGW32 (Windows GCC).
+
+   + Microsoft disabled recursive directory listings altogether when fixing
+     KB975254 (Thanks, Andrew Coggeshall).  When entire directories are
+     downloaded, instead of using "LIST -R" for one efficient listing of
+     all files, the directories are manually traversed with one directory
+     listing for each subdirectory.  This will improve reliability of
+     recursive downloads, except for the case when their are circular
+     symbolic links (which is why "LIST -R" had been favored, which the
+     server can easily handle).
+
+   + Compatibility fixes for Mac OS X for building from source code
+     (Thanks, Mathieu Rene)
+
+
+
+3.2.3, 2009-07-24
+
+   + Using MFMT command to set remote timestamps, if available, in
+     preference to SITE UTIME or MDTM.
+
+   + New configure flag, --enable-ssp, will turn on stack smashing
+     protection (if available by compiler) by adding to CFLAGS.
+
+   + Host, user, and pass fields have been increased in size.
+
+   + New debugTimestamping boolean field has been added, which will
+     cause the date and time to be printed with each call to the
+     logging functions.
+
+
+3.2.2.2, 2008-10-29
+
+   + Large File Support has been updated internally to use newer APIs,
+     rather than the transitional API.
+
+   + You can now specify an IP address for binding the local end of
+     sockets.  Useful if you need connections to originate from a
+     specific IP on the system.
+
+   + Bug fixed where binding an ephemeral port number in a specified
+     range (rare) may not have used all available retries for binding.
+
+   + Local writes now "retry" when the write returns less than the full
+     number of bytes specified, and will call write() again to write
+     out the remaining bytes.  This bug is very rare since local write
+     almost always write out the full number of bytes.  This bug may
+     have been limited to a particular type of filesystem.
+
+   + Using a higher resolution timer on Windows, so that the timer
+     no longer wraps over after a month.
+
+   + The minimum version of Windows that the source code will now
+     compile on is Windows 2000, although with a little tweaking you
+     could compile for Windows NT 4 again.
+
+   + Compatibility fix for Mac OS X when compiling from source to build
+     universal binaries (Thanks, Toshi NAGATA)
+
+   + Compatibility fix for FreeBSD, where a connection attempt may
+     have failed with "Operation now in progress."
+
+
+3.2.2, 2008-08-08
+
+  + PASV mode will now be retried, in case of a transient failure.
+    (Thanks, Steven Frank).
+
+  + The directory listing parser now can recognize dates in the format
+    of YYYY-mm-dd HH:MM[:SS].
+
+  + Fixed feature detection for WS_FTP servers.
+
+  + Workaround bug in REST on WS_FTP 6.0 (Thanks, Dan Nelson).
+
+  + Fixed a problem where doing a get on a remote file that did not exist,
+    but a file by the same name existed locally, would err out but truncate
+    the local file anyway.
+
+  + On Mac OS X, the configure script will now try to build universal
+    binaries by default.  If you don't want that, pass --disable-universal
+    to configure.
+
+  + The default connect timeout has been reduced from 30 to 10 seconds to 
+    reflect the increase in the typical user's network speed.
+
+  + Visual Studio 2008 solution files are now provided for building the
+    source on Windows.
+
+
+3.2.1, 2007-07-29
+
+  + Now a little more tolerant of FTP servers who send their internal network
+    IP addresses in their PASV response.  When this is detected, it will be
+    ignored and the data connection will connect to the same IP that is used
+    for the control connection.
+
+  + Fix problem where an empty directory could cause a recursive download
+    to abort prematurely.
+  
+  + Resuming of uploads can now work for servers that do not support
+    REST + STOR.  The APPE command will be used instead.
+
+  + A few memory leaks plugged.
+
+  + Fixes for FreeBSD 6 for compatibility with /usr/bin/make.
+
+
+3.2.0, 2006-08-05
+
+  + Fix read overflow in FTW (Thanks, Carl MAILLOUX, Craig Ball, and others).
+
+  + Fixed a problem with ASCII translation where a CR+LF may not have
+    been converted to the local text EOLN format if the CR+LF was split
+    over an internal block boundary.  The ASCII translation code has
+    been rewritten so it is also more tolerant of malformatted text,
+    such as CR+CR+LF end-of-lines.
+
+  + You can now resume uploads when uploading into a temporary file
+    (e.g. ncftpput's -S and -T options for using a temporary suffix or prefix).
+
+  + Fixes for Cygwin.
+
+  + Some fixes for largefile support on Windows.
+
+  + You can now resume transfers in ASCII mode, rather than just binary.
+
+  + Fixed a problem with recursive uploads for Windows.
+
+  + You can now use an empty password if your user account does not have
+    a password.
+
+  + Fixed a bug where Type of Service socket options were being set
+    with IPPROTO_TCP instead of IPPROTO_IP.
+
+
+3.1.9, 2005-03-19
+
+  + Renamed internal library function Duration() to FTPDuration()
+    to avoid namespace collision on Mac OS X.
+
+  + Recognize additional error response codes to SITE UTIME, to prevent
+    using it if the server doesn't support it.
+
+  + If the server does not support setting timestamps in MDTM, quit
+    trying it if it fails the first time.
+
+  + Do not allow control characters such as NUL, CR, LF in FTP URLs, to
+    avoid command injection as described by
+    Albert Puigsech Galicia <ripe AT 7a69ezine.org>.
+
+  + Fixed a problem where a timed-out transfer may have been detected
+    but still locked up the process (Thanks, IWAI, Masaharu).
+
+  + New function: FTPMkParentDir.  Useful for creating the parent directory
+    of a given pathname.
+
+  + New function: FTPGetFileToMemory(), which can download directly into
+    a pre-allocated memory buffer.  The function FTPPutFileFromMemory()
+    is also available and has been present in previous releases.
+    See the "ncftpgettomem.c" sample program for an example.
+
+  + Small compatibility fixes for Mac OS X, Solaris 10, Linux.
+
+  + Fix a memory leak on Windows that could occur when an error occurred 
+    during uploading.
+
+
+3.1.8.1, 2004-07-27
+  
+  + New error codes, kErrProxyDataConnectionsDisabled (-198) and
+    kErrDataConnOriginatedFromBadPort (-199).  These will be helpful
+    to detect when data connections were closed because of the
+    allowProxyForPort or require20 fields.
+
+  + A fix for some DNS resolution problems on Linux.
+
+
+3.1.8, 2004-07-12
+
+  + New error code, kErrRemoteSameAsLocal (-197), which is the upload
+    equivalent of kErrLocalSameAsRemote (-178).  It is recommended that
+    you special case this error when doing an upload, since it really
+    indicates that the only reason it didn't do the upload was because
+    the file was already there.
+
+  + New "pncftp" sample program shows how to do a proxy FTP transfer
+    (server-to-server direct FTP).
+
+  + Recognize broken IBM mainframe FTP servers and work around them.
+
+  + Working around a problem with ProFTPD 1.2.9 and later which would
+    cause recursive downloads to fail.
+
+  + For the malicious server problem that was addressed in 3.1.5, enhanced
+    the fix for better compatibility with mainframe FTP servers.
+
+  + Several HP-UX 10 compatibility bugs fixed (Thanks, Laurent FAILLIE).
+
+  + Bug fixed with the upload socket buffer not being set (Thanks, ybobble).
+
+
+3.1.7, 2004-01-07
+
+  + Fixed a memory leak introduced in 3.1.6.
+
+  + Fixed problem where it was assumed that daylight saving's time occurred
+    at the same time each year for all timezones.
+  
+  + Problem fixed with "ls -a" where occasionally a row with ".." and another
+    file would be omitted.
+  
+  + The configure script can now detect when the config.cache file has been
+    improperly recycled from a machine with a different OS.
+  
+  + The Windows version now uses the USERPROFILE environment variable, if it
+    was set, as the location of the user's home directory.
+
+  + Recognize broken DG/UX servers and work around them.
+
+
+3.1.6, 2003-08-25
+
+  + Fixed an important bug that was causing socket leaks on Windows.
+
+  + Fix for possible "Double Timeout" condition that could occur on uploads.
+
+  + Added support for GCC 3.4 precompiled headers.
+
+  + The "ABOR" sequence used by FTPAbortTransfer is more robust.
+
+  + There is now a "canceling" field for use from a progress meter to
+    determine if the canceler has been invoked.
+
+  + There is also a "canceled" field to tell if the transfer was successfully
+    aborted.
+
+  + Bug fixed where the library would try to perror() [bad anyway] for a
+    case when select() returned EINTR.
+
+  + Bug fixed where timeouts may not have worked.
+
+  + To the improved ASCII handling from 3.1.5, added another case where we
+    workaround files sent by a buggy FTP server implementation whose
+    files have CR+CR+LF end-of-lines.
+
+  + More fixes related to the above, as well as few other fixes from
+    Martin Storsj.
+
+  + Bug fixed where an upload filename could have been limited to 127
+    characters.
+
+  + For the malicious server problem that was addressed in 3.1.5, enhanced
+    the fix for better compatibility with Serv-U and WS_FTP servers.
+
+  + Bug fixed where a several minute delay would be incurred if you
+    tried to transfer a file that did not exist.
+
+
+3.1.5, 2002-10-13
+
+  + Problem fixed where a malicious or trojaned FTP server could send back
+    pathnames with directories different from the directory requested.
+    For example, if you did:
+      cd /pub
+      get *.zip
+    the malicious server could
+    send back a pathname like ../../../some/other/dir/filename.here
+    rather than pathnames such as filename.zip and trick NcFTP into writing
+    into a different local pathname if your user privileges had permission
+    to write it.
+
+    For details, see the CERT Vulnerability Note, at
+      http://www.kb.cert.org/vuls/id/210409
+
+ + Compatibility fixes for AIX, Linux, Mac OS X, IRIX 6.2 and SunOS 4.
+
+ + Be less pedantic about incorrectly formatted multi-line responses.
+
+ + For ASCII transfers, try harder to handle non-native end-of-line formats.
+
+ + New timeval fields lastCmdStart and lastCmdFinish which are updated by
+   the library automatically.  The purpose of these is to let you check
+   them to see if you want to send a NOOP to keep the connection alive.
+
+
+3.1.4, 2002-07-02
+
+ + Changed declaration of FTPConfirmResumeDownloadProc and
+   FTPConfirmResumeUploadProc so first parameter is a FTPCIPtr.
+   Unfortunately this will require existing code be slightly revised.
+
+ + Another internal function, Error(), has been renamed to FTPLogError()
+   to avoid another namespace collision.
+
+ + New configure flag, --disable-ccdv.
+
+ + Makefile has "distclean" target.
+
+ + Compatibility fixes for C++ and Linux.
+
+ + Fixed a socket leak and a crash on Win32.
+
+ + A few minor fixes for firewall logins.
+
+ + By default, proxy connections for PORT are no longer allowed.  This is
+   mostly an extra security precaution, to eliminate cases where someone
+   could hijack a data connection by connecting to us after we issue PORT
+   but before the server could connect to us.
+ 
+ + Bug fixed in configure script for enabling Socks.
+
+ + A few new firewalls (permutations of type 1).  (Thanks, Felix Buenemann)
+
+ + Try harder to avoid unnecessary SIZE/MDTM/MLST/REST commands.
+
+ + A new "hasHELP_SITE" structure field is available in case you need
+   to avoid doing a "HELP SITE".  Some server software (i.e. IBM Mainframes)
+   crashes when you do this.
+
+
+3.1.3, 2002-03-27
+
+ + Enhancements to Monkey.
+
+ + Bug fixed on Solaris where a socket could be left in non-blocking mode.
+ 
+ + Ls parsing is now more forgiving of weird /bin/ls implementations (AIX).
+
+ + Be more lenient on broken server implementations which include extra
+   blank lines in the control connection conversation.
+
+ + Compatibility fixes for IRIX 5.x and AIX 4.2.x.
+
+ + Compatibility fixes for Cygwin
+   (Thanks, Charles Wilson <cwilson AT ece.gatech.edu>).
+
+ + Some extra debugging information is now logged to the trace logs.
+
+ + Fix namespace collisions with Mac OS headers.  Use "FTPLine" and
+   "FTPFileInfo", in place of "Line" and "FileInfo".
+
+
+3.1.2, 2002-01-30:
+
+ + A fix for the local hostname detection code which could result with only
+   the first character of the domain appended, rather than the entire domain
+   (Thanks, Bernhard Sadlowski <sadlowsk AT mathematik.uni-bielefeld.de>).
+
+ + Another bug fixed in local hostname detection where looking up the host
+   by IP address was not done correctly.
+
+ + Fixed a few portability problems on HP-UX 10.20 which were introduced
+   in 3.1.0.
+
+ + Fixed bug with readdir_r usage on Solaris, which could cause crashes
+   when doing recursive uploads, among other things.
+
+ + On Linux, use gethostbyname2_r() to specify that we only want IPv4
+   addresses returned.
+
+ + Reversing behavior from 3.1.0 where we did a shutdown() on the half
+   of the socket that wasn't used.  We suspect this was causing some
+   firewalls and routers to panic and assume the whole connection was
+   to be closed.
+
+ + Bug fixed where an unresolvable hostname caused a pointless connection
+   attempt which would fail.
+
+ + Bug fixed in FTPChdir3 with one-at-a-time mode.
+
+ + Obscure bug fixed in recursive local globbing.
+
+ + Fixes for ncftpsyncput sample program.
+
+
+3.1.1, 2001-12-23:
+
+ + Fixed bugs with our use of gethostbyname_r/addr_r on Linux.
+
+ + Fixed bugs with our implementation of stat64() on Windows, which caused
+   problems when querying information about local directories.
+
+
+3.1.0, 2001-12-17:
+
++ Win32 support is now officially incorporated into the library.
+
++ The library no longer uses signals or expects you to have signal
+  handlers for SIGALRM or SIGPIPE.
+
++ Internal changes should result in the library being more friendly
+  to multi-threaded environments, although we still do not have our
+  test suite ready to certify that the library is 100% threadsafe.
+
++ Library defaults to "PASV-but-fallback-to-PORT" mode now (i.e.
+  cip->dataPortMode == kFallBackToSendPortMode).  The previous
+  default had been PORT mode (cip->dataPortMode == kSendPortMode).
+
++ Library now uses timeouts by default since a signal handler is not
+  required (kDefaultXferTimeout==600, kDefaultConnTimeout==30, and
+  kDefaultCtrlTimeout==135).
+
++ Bug fixed where puts could delay a few seconds unnecessarily after
+  the file had been sent.
+
++ Library optimizations should result in less unneeded code included with
+  programs that use the libraries.  Your programs should be smaller as a
+  result.
+
++ Recursive uploading has been substantially reworked for both functionality
+  and reliability.  Arbitrary pathname sizes have also been removed, so
+  directory trees should only be limited by available memory and stack space.
+
++ Huge number of lint fixes.  LibNcFTP now compiles cleanly on several
+  platforms even with extra warning options enabled.
+
++ Large number of internal changes to the configure scripts.
